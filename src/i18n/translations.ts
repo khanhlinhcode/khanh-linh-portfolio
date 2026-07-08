@@ -265,7 +265,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       noIssuer: '',
     },
     contact: {
-      portfolioLabel: 'Portfolio',
+      portfolioLabel: 'CertChain Live Demo',
       graduation: 'Expected graduation: 10/2026',
     },
     footer: 'Built as a focused developer portfolio for recruiter review.',
@@ -454,7 +454,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       noIssuer: '',
     },
     contact: {
-      portfolioLabel: 'Portfolio',
+      portfolioLabel: 'Demo CertChain',
       graduation: 'Dự kiến tốt nghiệp: 10/2026',
     },
     footer: 'Portfolio được xây dựng tập trung cho recruiter review.',
