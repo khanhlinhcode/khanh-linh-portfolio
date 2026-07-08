@@ -1,0 +1,16 @@
+[data-theme="dark"] .button.secondary,
+[data-theme="dark"] .button.ghost,
+[data-theme="dark"] .showcase-links a,
+[data-theme="dark"] .project-links a {
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(135deg, rgba(111, 232, 213, 0.08), rgba(139, 140, 255, 0.06) 50%, rgba(255, 159, 122, 0.04)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03)),
+    var(--apple-glass-surface);
+}
+
+[data-theme="dark"] .project-card.featured {
+  background:
+    linear-gradient(rgba(28, 28, 30, 0.84), rgba(28, 28, 30, 0.84)) padding-box,
+    var(--apple-accent-gradient) border-box;
+}

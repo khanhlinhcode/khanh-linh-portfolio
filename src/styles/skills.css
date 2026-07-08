@@ -1,0 +1,81 @@
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.skill-card {
+  flex: 1 1 min(100%, 260px);
+  min-width: min(100%, 240px);
+}
+
+.skill-card .card-heading {
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.skill-card .card-heading h3 {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.skill-card .card-heading svg {
+  color: var(--muted);
+  opacity: 0.72;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-tags span {
+  min-height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--apple-radius-pill);
+  padding: 9px 13px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.035)),
+    rgba(255, 255, 255, 0.055);
+  color: var(--ink-2);
+  font-family: "Manrope", Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 8px 18px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(14px) saturate(160%);
+  transition:
+    background var(--apple-transition),
+    border-color var(--apple-transition),
+    color var(--apple-transition),
+    transform var(--apple-transition),
+    box-shadow var(--apple-transition);
+}
+
+[data-theme="light"] .skill-tags span {
+  border-color: rgba(255, 255, 255, 0.5);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.48)),
+    rgba(255, 255, 255, 0.62);
+}
+
+.skill-tags span:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background:
+    linear-gradient(120deg, rgba(0, 113, 227, 0.78), rgba(175, 82, 222, 0.7), rgba(255, 55, 95, 0.62)),
+    var(--apple-accent-gradient);
+  color: #ffffff;
+  box-shadow:
+    0 12px 28px rgba(0, 113, 227, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+}
