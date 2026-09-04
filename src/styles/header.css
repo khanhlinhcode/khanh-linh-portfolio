@@ -3,13 +3,13 @@
   top: 0;
   z-index: 20;
   display: grid;
-  grid-template-columns: minmax(286px, auto) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   width: 100%;
   min-height: var(--header-height);
   margin: 0;
-  gap: 18px;
-  padding: 12px max(24px, calc((100vw - var(--header-container)) / 2));
+  gap: 16px;
+  padding: 12px max(32px, calc((100vw - var(--header-container)) / 2 + 20px));
   border: 0;
   border-bottom: 1px solid rgba(145, 169, 198, 0.2);
   border-radius: 0;
@@ -64,8 +64,8 @@
   align-items: center;
   flex-shrink: 0;
   gap: 13px;
-  min-width: 286px;
-  transition: transform 180ms ease;
+  min-width: 0;
+  justify-self: start;
 }
 
 .brand-mark {
@@ -97,7 +97,6 @@
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     0 14px 30px rgba(15, 155, 181, 0.2);
-  transform: translateY(-1px);
 }
 
 .brand-copy {
@@ -131,8 +130,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-self: end;
-  justify-content: flex-end;
+  justify-self: center;
+  justify-content: center;
   gap: 6px;
   overflow: hidden;
   border: 1px solid rgba(145, 169, 198, 0.2);
@@ -228,14 +227,11 @@
   transform: scaleX(1);
 }
 
-.site-nav a:hover {
-  transform: translateY(-1px);
-}
-
 .header-actions {
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
+  justify-self: end;
   gap: 9px;
 }
 
@@ -298,7 +294,6 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.16),
     inset 0 -1px 0 rgba(111, 232, 213, 0.16),
     0 16px 30px rgba(15, 155, 181, 0.16);
-  transform: translateY(-1px);
 }
 
 .header-actions a:hover::before,
@@ -349,11 +344,6 @@
     transform var(--apple-transition);
 }
 
-.language-toggle button:hover,
-.language-toggle button:focus-visible {
-  transform: translateY(-1px);
-}
-
 .language-toggle button.is-active {
   border-color: rgba(111, 232, 213, 0.42);
   background:
@@ -393,7 +383,7 @@
 
 .mobile-menu-actions a {
   display: inline-flex;
-  min-height: 42px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: 7px;

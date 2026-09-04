@@ -7,7 +7,7 @@ export default function AboutSection({ t }: { t: TranslationDictionary }) {
       <SectionTitle {...t.sections.about} />
       <div className="about-grid">
         {t.aboutHighlights.map((item) => (
-          <article className="about-card" key={item.title}>
+          <article className="about-card" data-liquid-hover="card" key={item.title}>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
           </article>

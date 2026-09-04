@@ -15,7 +15,7 @@ export default function ProjectsSection({ t }: { t: TranslationDictionary }) {
       </div>
       <div className="projects-grid">
         {secondaryProjects.map((project) => (
-          <ProjectCard project={project} key={project.name} t={t} />
+          <ProjectCard project={project} key={project.id} t={t} />
         ))}
       </div>
     </section>

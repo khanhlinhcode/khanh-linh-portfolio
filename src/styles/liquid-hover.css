@@ -1,0 +1,143 @@
+[data-liquid-hover="control"]:not(.back-to-top),
+[data-liquid-hover="chip"] {
+  position: relative;
+}
+
+[data-liquid-hover="control"],
+[data-liquid-hover="chip"] {
+  isolation: isolate;
+  overflow: hidden;
+  border-color: var(--liquid-control-border);
+}
+
+[data-liquid-hover="control"] {
+  box-shadow: var(--liquid-control-shadow);
+}
+
+[data-liquid-hover="chip"] {
+  box-shadow: var(--liquid-chip-shadow);
+}
+
+html:root [data-liquid-hover="control"]:not(.primary),
+html:root [data-liquid-hover="chip"] {
+  background: var(--liquid-control-surface);
+}
+
+[data-liquid-hover="control"] {
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(12px) saturate(1.08);
+  backdrop-filter: blur(12px) saturate(1.08);
+}
+
+[data-liquid-hover="chip"] {
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(7px) saturate(1.04);
+  backdrop-filter: blur(7px) saturate(1.04);
+}
+
+[data-liquid-hover="control"]::before,
+[data-liquid-hover="chip"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--liquid-control-hover-surface);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+[data-liquid-hover="control"]:focus-visible,
+[data-liquid-hover="control"]:active,
+[data-liquid-hover="control"].is-active,
+[data-liquid-hover="control"][aria-pressed="true"] {
+  border-color: var(--liquid-control-hover-border);
+  box-shadow: var(--liquid-control-hover-shadow);
+}
+
+[data-liquid-hover="chip"]:focus-visible,
+[data-liquid-hover="chip"]:active {
+  border-color: var(--liquid-control-hover-border);
+  box-shadow: var(--liquid-chip-hover-shadow);
+}
+
+[data-liquid-hover="control"]:focus-visible::before,
+[data-liquid-hover="control"]:active::before,
+[data-liquid-hover="control"].is-active::before,
+[data-liquid-hover="control"][aria-pressed="true"]::before,
+[data-liquid-hover="chip"]:focus-visible::before,
+[data-liquid-hover="chip"]:active::before {
+  opacity: 1;
+}
+
+[data-liquid-hover="card"]:focus-visible,
+[data-liquid-hover="card"]:focus-within {
+  border-color: var(--liquid-control-hover-border);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-liquid-hover="control"]:hover {
+    border-color: var(--liquid-control-hover-border);
+    box-shadow: var(--liquid-control-hover-shadow);
+  }
+
+  [data-liquid-hover="chip"]:hover {
+    border-color: var(--liquid-control-hover-border);
+    box-shadow: var(--liquid-chip-hover-shadow);
+  }
+
+  [data-liquid-hover="control"]:hover::before,
+  [data-liquid-hover="chip"]:hover::before {
+    opacity: 1;
+  }
+
+  [data-liquid-hover="card"]:hover {
+    border-color: var(--liquid-control-hover-border);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  [data-liquid-hover="control"],
+  [data-liquid-hover="chip"] {
+    -webkit-backdrop-filter: blur(4px) saturate(1.02);
+    backdrop-filter: blur(4px) saturate(1.02);
+  }
+}
+
+/* Keep the glass palette while avoiding repeated backdrop recomposition during scroll. */
+.liquid-journey:is(.is-moving, .is-settling, .is-bursting) ~ main :is(
+    .summary-strip,
+    .hero-identity,
+    .hero-showcase,
+    .about-card,
+    .skill-card,
+    .project-card,
+    .timeline-block,
+    .info-block,
+    .cert-list > div,
+    .contact-panel,
+    .contact-grid a,
+    .contact-grid > span,
+    .live-projects-shell,
+    [data-liquid-hover="control"],
+    [data-liquid-hover="chip"]
+  ) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-liquid-hover],
+  [data-liquid-hover]:focus-visible,
+  [data-liquid-hover]:active {
+    transition:
+      box-shadow 120ms ease,
+      border-color 120ms ease;
+  }
+
+  [data-liquid-hover="control"]::before,
+  [data-liquid-hover="chip"]::before {
+    transition: opacity 120ms ease;
+  }
+}

@@ -1,33 +1,33 @@
+/* ══════════════════════════════════════
+   Responsive — Mobile-first Bug Fixes
+   ══════════════════════════════════════ */
+
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+  html {
+    scroll-behavior: auto;
   }
 
   .back-to-top {
-    transition: none;
-    will-change: auto;
+    transform: none;
+    transition: opacity 120ms ease;
+  }
+
+  .back-to-top.is-visible {
+    transform: none;
   }
 
   .hero-copy,
   .hero-showcase {
     animation: none;
   }
+
 }
+
+/* ── 1440px — Large desktop ── */
 
 @media (max-width: 1440px) {
   .site-header {
     gap: 14px;
-    padding-right: 22px;
-    padding-left: 22px;
-  }
-
-  .brand {
-    min-width: 274px;
   }
 
   .header-actions .optional-action {
@@ -40,20 +40,23 @@
   }
 }
 
+/* ── 1208px — Section width ── */
+
+@media (max-width: 1208px) {
+  .section {
+    width: calc(100% - 48px);
+  }
+}
+
+/* ── 1120px — Tablet landscape ── */
+
 @media (max-width: 1120px) {
   :root {
     --header-height: 76px;
   }
 
   .site-header {
-    grid-template-columns: minmax(250px, auto) minmax(0, 1fr) auto;
     gap: 12px;
-    padding-right: 22px;
-    padding-left: 22px;
-  }
-
-  .brand {
-    min-width: 250px;
   }
 
   .brand-mark {
@@ -103,15 +106,31 @@
   .skills-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .skill-tier[data-tier="ai"] .skill-card {
+    grid-column: auto;
+  }
+
+  .skill-tier[data-tier="ai"] .skill-card:first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Fix: Skills AI tier grid simplification */
+  .skill-tier[data-tier="ai"] .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-@media (max-width: 980px) {
+/* ── 1080px — Compact header / tablet portrait ── */
+
+@media (max-width: 1080px) {
   :root {
     --header-height: 72px;
-    --section-y: 76px;
+    --section-y: 82px;
   }
 
   .site-header {
+    grid-template-columns: minmax(0, 1fr) auto;
     width: 100%;
     margin-top: 0;
     padding-right: 20px;
@@ -122,6 +141,75 @@
     min-width: 0;
   }
 
+  /* Hide desktop nav, show mobile menu button */
+  .site-nav,
+  .header-actions .optional-action {
+    display: none;
+  }
+
+  .header-actions {
+    justify-self: end;
+  }
+
+  .menu-button {
+    display: inline-flex;
+  }
+
+  .mobile-header-menu.is-open {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: 12px;
+    width: 100%;
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+    animation: mobile-menu-slide 280ms var(--liquid-control-ease) both;
+  }
+
+  @keyframes mobile-menu-slide {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .mobile-header-menu nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .mobile-header-menu nav a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(145, 169, 198, 0.16);
+    border-radius: 8px;
+    padding: 9px 8px;
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  [data-theme="light"] .mobile-header-menu nav a {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .mobile-header-menu nav a.is-active {
+    color: var(--ink);
+    border-color: var(--line-strong);
+    background: rgba(111, 232, 213, 0.08);
+  }
+
+  /* Hero */
   .hero {
     min-height: auto;
     padding: 66px 28px 64px;
@@ -143,6 +231,7 @@
     max-width: 760px;
   }
 
+  /* Fix: All grids go single column */
   .summary-strip,
   .timeline-block,
   .projects-grid,
@@ -152,102 +241,46 @@
     grid-template-columns: 1fr;
   }
 
+  /* Fix: Summary strip 2 columns on tablet */
+  .summary-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .timeline-block {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
   .summary-strip div {
     min-height: 0;
-    border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 24px 28px;
   }
 
   .section {
     width: calc(100% - 56px);
   }
-
-  .section-title {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .section-kicker {
-    padding-top: 0;
-  }
 }
 
-@media (max-width: 980px) {
-  .site-header {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .site-nav,
-  .header-actions .optional-action {
-    display: none;
-  }
-
-  .header-actions {
-    justify-self: end;
-  }
-
-  .menu-button {
-    display: inline-flex;
-  }
-
-  .mobile-header-menu.is-open {
-    display: grid;
-    grid-column: 1 / -1;
-    gap: 12px;
-    width: 100%;
-    border-top: 1px solid var(--line);
-    padding-top: 12px;
-  }
-
-  .mobile-header-menu nav {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 6px;
-  }
-
-  .mobile-header-menu nav a {
-    display: inline-flex;
-    min-height: 42px;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(145, 169, 198, 0.16);
-    border-radius: 8px;
-    padding: 9px 8px;
-    background: rgba(255, 255, 255, 0.045);
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-weight: 700;
-    line-height: 1.15;
-    overflow-wrap: anywhere;
-    text-align: center;
-  }
-
-  .mobile-header-menu nav a.is-active,
-  .mobile-header-menu nav a:hover,
-  .mobile-header-menu nav a:focus-visible {
-    border-color: rgba(111, 232, 213, 0.24);
-    background: rgba(111, 232, 213, 0.1);
-    color: var(--ink);
-  }
-}
+/* ── 760px — Mobile landscape ── */
 
 @media (max-width: 760px) {
   :root {
     --header-height: 70px;
+    --glass-blur-md: blur(11px) saturate(1.08);
     --text-body: clamp(0.96rem, 0.6vw + 0.88rem, 1rem);
     --text-label: clamp(0.82rem, 0.5vw + 0.72rem, 0.88rem);
     --text-section-title: clamp(2rem, 6vw, 2.55rem);
-    --text-hero: clamp(2.5rem, 10vw, 3.35rem);
+    --text-hero: clamp(2.3rem, 9vw, 3.05rem);
   }
 
+  /* Fix: Remove overflow:hidden that was clipping mobile menu */
   .site-header {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     width: 100%;
     min-height: var(--header-height);
-    overflow: hidden;
     padding: 10px 14px;
+    backdrop-filter: blur(13px) saturate(1.08);
   }
 
   .header-actions {
@@ -274,6 +307,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* Hero mobile */
   .hero {
     padding: 48px 18px 52px;
   }
@@ -281,7 +315,9 @@
   .hero::after {
     inset: 10% -16% auto;
     height: 360px;
-    filter: blur(58px);
+    background: radial-gradient(ellipse at center, var(--indigo), transparent 68%);
+    filter: none;
+    mix-blend-mode: normal;
     opacity: 0.1;
   }
 
@@ -290,7 +326,8 @@
   }
 
   .hero-identity {
-    width: 100%;
+    width: fit-content;
+    max-width: 100%;
   }
 
   .hero-showcase {
@@ -325,6 +362,7 @@
     padding-top: 20px;
   }
 
+  /* Fix: Buttons stack but keep touch-friendly height */
   .hero-actions,
   .contact-actions {
     flex-direction: column;
@@ -335,17 +373,45 @@
     min-height: 48px;
   }
 
+  .project-links a {
+    flex: 1 1 140px;
+  }
+
+  /* Fix: All grids single column on mobile */
   .about-grid,
   .skills-grid,
-  .focus-grid {
+  .focus-grid,
+  .summary-strip {
     grid-template-columns: 1fr;
+  }
+
+  .skill-tier[data-tier="ai"] .skill-card:first-child {
+    grid-column: auto;
+  }
+
+  .skill-tier[data-tier="ai"] .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-tier-list {
+    gap: 38px;
+  }
+
+  .skill-tier + .skill-tier {
+    padding-top: 32px;
   }
 
   .section {
     width: calc(100% - 36px);
-    padding: 58px 0;
+    padding: 64px 0;
   }
 
+  .summary-strip {
+    width: calc(100% - 36px);
+    margin-top: 24px;
+  }
+
+  /* Fix: Card padding compact */
   .about-card,
   .skill-card,
   .project-card,
@@ -377,7 +443,14 @@
     height: 48px;
     border-radius: 16px;
   }
+
+  /* Fix: Live project card min-height */
+  .live-project-card {
+    min-height: 0;
+  }
 }
+
+/* ── 520px — Small mobile ── */
 
 @media (max-width: 520px) {
   .brand-copy strong {
@@ -405,10 +478,12 @@
   }
 }
 
+/* ── 420px — Small phone ── */
+
 @media (max-width: 420px) {
   :root {
     --header-height: 68px;
-    --text-hero: clamp(2.28rem, 10vw, 2.72rem);
+    --text-hero: clamp(2.16rem, 9vw, 2.58rem);
   }
 
   .brand {
@@ -448,8 +523,8 @@
   }
 
   .icon-button {
-    width: 40px;
-    min-height: 40px;
+    width: 44px;
+    min-height: 44px;
   }
 
   .mobile-header-menu nav a {
@@ -463,6 +538,8 @@
     height: 46px;
   }
 }
+
+/* ── 360px — Ultra-small ── */
 
 @media (max-width: 360px) {
   .site-header {
@@ -490,7 +567,51 @@
 
   .language-toggle button,
   .icon-button {
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ── Safe area insets for notched devices ── */
+
+@supports (padding: env(safe-area-inset-top)) {
+  .site-header {
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+
+  @media (min-width: 1081px) {
+    .site-header {
+      padding-left: max(32px, calc((100vw - var(--header-container)) / 2 + 20px), env(safe-area-inset-left));
+      padding-right: max(32px, calc((100vw - var(--header-container)) / 2 + 20px), env(safe-area-inset-right));
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .site-header {
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .site-header {
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+    }
+  }
+
+  @media (max-width: 360px) {
+    .site-header {
+      padding-left: max(10px, env(safe-area-inset-left));
+      padding-right: max(10px, env(safe-area-inset-right));
+    }
+  }
+
+  .site-footer {
+    padding-bottom: max(40px, calc(28px + env(safe-area-inset-bottom)));
+  }
+
+  .back-to-top {
+    bottom: max(24px, calc(16px + env(safe-area-inset-bottom)));
   }
 }

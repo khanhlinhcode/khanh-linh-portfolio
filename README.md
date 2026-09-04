@@ -1,73 +1,56 @@
-# Khanh Linh To Portfolio
+# Khanh Linh To — AI & Software Engineer
 
-Personal developer portfolio for **Khanh Linh To**, a Computer Science student focused on full-stack development, blockchain certificate verification, AI applications, and AI-IoT monitoring workflows.
+Personal portfolio for **Khanh Linh To**, a Computer Science Engineer focused on AI Engineering, NLP/RAG, Computer Vision, LLM applications, and production software engineering.
 
-The portfolio is designed for recruiter review and highlights practical engineering projects, technical skills, education, certifications, and contact information.
+**Live portfolio:** https://khanh-linh-portfolio.vercel.app/
 
-## Overview
+## Profile
 
-- Role positioning: Junior Software Engineer / Full-stack Developer
-- Main focus areas: React, full-stack web development, blockchain verification, AI applications, AI-IoT workflows
-- Featured project: CertChain
+- Primary direction: AI Engineer / Applied AI Engineer
+- Secondary direction: Software Engineer
 - Location: Can Tho, Vietnam
+- Education: Engineer's Degree in Computer Science, Nam Can Tho University — graduated August 2026
 - GitHub: https://github.com/khanhlinhcode
-- Live portfolio / CertChain demo: https://n-xi-pink.vercel.app/
 
-## Features
+## Experience
 
-- Responsive portfolio layout for desktop, tablet, and mobile
-- Sticky premium header with navigation and quick actions
-- Dark/light mode with localStorage persistence
-- EN/VI language switching with localStorage persistence
-- Recruiter-friendly project, skills, education, certification, and contact sections
-- CertChain highlighted as the flagship project
-- Certificate evidence linked through Google Drive
-- CV button is intentionally disabled until a real CV file is available
+- **Software Engineer (Full-Stack), Phuong Vinh Group — OneMekong Platform** — June 2026 to present
+- **Software Engineering Intern — AI Drowsiness Detection & IoT Monitoring, Tien Phong Technology Engineering Co., Ltd.** — October 2025 to June 2026
+
+The portfolio keeps the detailed responsibilities in its structured experience data so the career timeline remains consistent across the site.
+
+## Featured Work
+
+### NLP Academic Search & RAG Engine
+
+A local-first academic search and grounded-Q&A system combining BM25 and dense retrieval with Reciprocal Rank Fusion and optional cross-encoder reranking.
+
+- GitHub: https://github.com/khanhlinhcode/NLP-Academic-Search-RAG-Engine
+- Live demo: https://nlp-academic-search.streamlit.app/
+
+### Other AI and engineering projects
+
+- AI Currency Recognition System
+- Farta Market — AI Support Chatbot
+- Auto Video Pipeline
+- CertChain
+
+## Portfolio Features
+
+- Responsive desktop, tablet, and mobile layouts
+- Dark/light theme with persisted preference
+- English/Vietnamese content
+- Structured experience, project-link, award, education, and skill data
+- Accessible external-link labels and keyboard focus states
+- Recruiter-friendly AI-first information hierarchy
 
 ## Tech Stack
 
-- React
+- React 19
 - TypeScript
 - Vite
 - CSS custom properties
 - lucide-react
-
-## Featured Projects
-
-### CertChain
-
-Blockchain certificate verification system for issuing, managing, revoking, and verifying digital certificates by Certificate ID, PDF upload, and QR verification.
-
-- Tech: Solidity, Hardhat, Node.js, Express.js, MongoDB, ethers.js, JWT, IPFS, Next.js, TypeScript, Docker Compose
-- GitHub: https://github.com/khanhlinhcode/BlockChain
-- Demo: https://n-xi-pink.vercel.app/
-
-### Other Projects
-
-- Farta Market Frontend: https://github.com/khanhlinhcode/Farta_Market
-- AI Currency Recognition Backend: https://github.com/khanhlinhcode/Currency_Backend
-- Currency Recognition Frontend: https://github.com/khanhlinhcode/Currency_Frontend
-- PERN Stack Product Store: https://github.com/khanhlinhcode/PERT-STACK
-
-## Project Structure
-
-```text
-src/
-  data/
-    experience.ts
-    profile.ts
-    projects.ts
-    skills.ts
-  hooks/
-    useLanguage.ts
-    useTheme.ts
-  i18n/
-    translations.ts
-  main.tsx
-  styles.css
-public/
-  favicon.svg
-```
 
 ## Local Development
 
@@ -76,8 +59,6 @@ npm install
 npm run dev
 ```
 
-The local development server runs with Vite.
-
 ## Production Build
 
 ```bash
@@ -85,33 +66,8 @@ npm run build
 npm run preview
 ```
 
-Build output is generated in the `dist/` directory.
+The build output is generated in `dist/` and is configured for deployment on Vercel.
 
-## Deployment
+## CV Status
 
-This project is ready to deploy on Vercel, Netlify, or GitHub Pages after pushing to a GitHub repository.
-
-Recommended build settings:
-
-- Build command: `npm run build`
-- Output directory: `dist`
-- Framework: Vite
-
-## Git Setup
-
-If this folder is not a git repository yet:
-
-```bash
-git init
-git add .
-git commit -m "Prepare portfolio for production deployment"
-git branch -M main
-git remote add origin https://github.com/khanhlinhcode/YOUR_REPO_NAME.git
-git push -u origin main
-```
-
-## Notes
-
-- Do not enable CV download until a real CV PDF is added.
-- Certificates are linked through the Google Drive folder shown in the portfolio.
-- No fake metrics, company claims, or unverified achievements are included.
+The CV action remains unavailable until a verified final PDF is added to `public/`. No placeholder download URL is used.

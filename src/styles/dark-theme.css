@@ -1,16 +1,97 @@
+/* ══════════════════════════════════════
+   Dark Theme — Refinements
+   ══════════════════════════════════════ */
+
+[data-theme="dark"] body {
+  background: linear-gradient(180deg, #040910 0%, #06101b 34%, #071522 72%, #081724 100%);
+}
+
+[data-theme="dark"] body::before {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.16)),
+    linear-gradient(180deg, rgba(111, 232, 213, 0.025), transparent 28%, rgba(139, 140, 255, 0.018) 74%, transparent);
+  opacity: 1;
+}
+
+[data-theme="dark"] .hero {
+  background: linear-gradient(180deg, rgba(4, 9, 16, 0.22), rgba(6, 16, 27, 0.72) 72%, transparent);
+}
+
+/* Fix: Use opacity/visibility instead of content:none to prevent flicker */
+[data-theme="dark"] .hero::before {
+  opacity: 0;
+}
+
+[data-theme="dark"] .hero::after {
+  opacity: 0;
+}
+
+[data-theme="dark"] .credentials-section {
+  background: transparent;
+}
+
+[data-theme="dark"] .site-header {
+  border-bottom-color: rgba(162, 185, 209, 0.13);
+  background:
+    linear-gradient(180deg, rgba(10, 24, 40, 0.9), rgba(7, 18, 31, 0.78)),
+    rgba(5, 12, 22, 0.78);
+  box-shadow:
+    var(--depth-2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.065);
+}
+
+[data-theme="dark"] .site-nav,
+[data-theme="dark"] .header-actions a,
+[data-theme="dark"] .language-toggle,
+[data-theme="dark"] .icon-button {
+  border-color: rgba(162, 185, 209, 0.13);
+  background:
+    linear-gradient(145deg, rgba(111, 232, 213, 0.045), rgba(139, 140, 255, 0.035)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(9, 22, 38, 0.72);
+}
+
 [data-theme="dark"] .button.secondary,
 [data-theme="dark"] .button.ghost,
 [data-theme="dark"] .showcase-links a,
 [data-theme="dark"] .project-links a {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(162, 185, 209, 0.14);
   background:
-    linear-gradient(135deg, rgba(111, 232, 213, 0.08), rgba(139, 140, 255, 0.06) 50%, rgba(255, 159, 122, 0.04)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03)),
+    linear-gradient(145deg, rgba(111, 232, 213, 0.055), rgba(139, 140, 255, 0.04)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.018)),
     var(--apple-glass-surface);
 }
 
 [data-theme="dark"] .project-card.featured {
   background:
-    linear-gradient(rgba(28, 28, 30, 0.84), rgba(28, 28, 30, 0.84)) padding-box,
+    linear-gradient(rgba(9, 22, 38, 0.92), rgba(9, 22, 38, 0.92)) padding-box,
     var(--apple-accent-gradient) border-box;
+}
+
+[data-theme="dark"] .hero-showcase,
+[data-theme="dark"] .about-card,
+[data-theme="dark"] .skill-card,
+[data-theme="dark"] .project-card,
+[data-theme="dark"] .timeline-block,
+[data-theme="dark"] .info-block,
+[data-theme="dark"] .cert-list div,
+[data-theme="dark"] .contact-panel,
+[data-theme="dark"] .contact-grid a,
+[data-theme="dark"] .contact-grid > span {
+  border-color: rgba(162, 185, 209, 0.13);
+  background:
+    linear-gradient(145deg, rgba(111, 232, 213, 0.045), rgba(139, 140, 255, 0.035) 58%, transparent),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015)),
+    var(--surface-glass);
+  box-shadow:
+    var(--depth-3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.065);
+}
+
+[data-theme="dark"] .summary-strip {
+  border-color: rgba(162, 185, 209, 0.13);
+  background:
+    linear-gradient(120deg, rgba(111, 232, 213, 0.055), rgba(139, 140, 255, 0.045) 58%, transparent),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)),
+    rgba(7, 18, 31, 0.84);
 }

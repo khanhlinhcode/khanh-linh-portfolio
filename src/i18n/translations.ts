@@ -6,9 +6,24 @@ type ProjectCopy = {
   features: string[];
 };
 
-type CertificationCopy = {
-  openFolder: string;
-  noIssuer: string;
+type LiveProjectCopy = {
+  category: string;
+  description: string;
+  previewTitle: string;
+  previewHint?: string;
+};
+
+type ExperienceCopy = {
+  role: string;
+  period?: string;
+  mode?: string;
+  bullets: string[];
+};
+
+type AwardCopy = {
+  title: string;
+  date?: string;
+  description: string;
 };
 
 export type TranslationDictionary = {
@@ -31,6 +46,7 @@ export type TranslationDictionary = {
     viewGithub: string;
     viewProjects: string;
   };
+  projectLinkLabels: Record<string, string>;
   brandSubtitle: string;
   hero: {
     badge: string;
@@ -38,43 +54,52 @@ export type TranslationDictionary = {
     title: string;
     description: string;
     focusLine: string;
-    identityLabel: string;
     status: string;
     dashboard: string;
     featuredProject: string;
+    featuredSummary: string;
   };
   focusAreas: string[];
   summary: Array<{ title: string; description: string }>;
   sections: {
-    about: { eyebrow: string; title: string; description: string };
-    skills: { eyebrow: string; title: string; description: string };
-    experience: { eyebrow: string; title: string; description: string };
-    projects: { eyebrow: string; title: string; description: string };
-    credentials: { eyebrow: string; title: string; description: string };
-    contact: { eyebrow: string; title: string; description: string };
+    about: { title: string; description: string };
+    skills: { title: string; description: string };
+    experience: { title: string; description: string };
+    projects: { title: string; description: string };
+    liveProjects: { title: string; description: string };
+    credentials: { title: string; description: string };
+    contact: { title: string; description: string };
   };
   aboutHighlights: Array<{ title: string; description: string }>;
   skillTitles: Record<string, string>;
+  skillTiers: Record<string, { title: string; description: string }>;
   experience: {
-    role: string;
     metadataConnector: string;
-    projectLabel: string;
-    bullets: string[];
+    techLabel: string;
+    items: Record<string, ExperienceCopy>;
   };
   projects: Record<string, ProjectCopy>;
+  liveShowcase: {
+    status: string;
+    openProject: string;
+  };
+  liveProjects: Record<string, LiveProjectCopy>;
   education: {
     degree: string;
+    graduation: string;
     classification: string;
     gpaLabel: string;
     courseworkLabel: string;
   };
-  award: {
-    title: string;
-    description: string;
+  awards: Record<string, AwardCopy>;
+  awardTeamLabel: string;
+  certifications: {
+    openFolder: string;
+    noIssuer: string;
   };
-  certifications: CertificationCopy;
   contact: {
     portfolioLabel: string;
+    liveProjectsLabel: string;
     graduation: string;
   };
   footer: string;
@@ -108,167 +133,158 @@ export const translations: Record<Language, TranslationDictionary> = {
       viewGithub: 'View GitHub',
       viewProjects: 'View Projects',
     },
-    brandSubtitle: 'Junior Software Engineer',
-    hero: {
-      badge: 'Junior Software Engineer',
-      headline: 'Building full-stack, blockchain, and AI-IoT applications.',
-      title: 'Junior Software Engineer | Full-stack Developer',
-      description:
-        'Computer Science student focused on React, Next.js, Node.js, blockchain-based verification systems, AI-powered tools, and IoT monitoring workflows.',
-      focusLine: 'React · Next.js · Node.js · Solidity · Python · MediaPipe · IoT',
-      identityLabel: 'Available profile',
-      status: 'Open to Junior Developer Roles',
-      dashboard: 'Portfolio dashboard',
-      featuredProject: 'Featured project',
+    projectLinkLabels: {
+      github: 'GitHub',
+      demo: 'Live Demo',
+      backend: 'Backend',
+      frontend: 'Frontend',
+      docs: 'API Docs',
     },
-    focusAreas: ['Full-stack', 'Blockchain', 'AI apps', 'AI-IoT'],
+    brandSubtitle: 'AI & Software Engineer',
+    hero: {
+      badge: 'Computer Science Engineer',
+      headline: 'Applied AI, engineered for real-world use.',
+      title: 'AI Engineer | Software Engineer',
+      description:
+        'Computer Science Engineer building NLP/RAG, computer vision, and LLM applications—backed by hands-on production software experience.',
+      focusLine: 'Python · FastAPI · RAG · TensorFlow/Keras · Computer Vision · LLMs · Docker',
+      status: 'Open to AI & Software Engineering roles',
+      dashboard: 'AI & Software Engineer',
+      featuredProject: 'Featured work',
+      featuredSummary: 'Hybrid academic search and grounded Q&A with BM25, dense retrieval, RRF, and evidence verification.',
+    },
+    focusAreas: ['NLP / RAG', 'Computer Vision', 'LLM Applications', 'Software Engineering'],
     summary: [
       {
-        title: 'React + Full-stack',
-        description: 'Frontend flows, REST APIs, authentication, and database-backed project work',
+        title: 'NLP / RAG systems',
+        description: 'Hybrid retrieval, grounded answers, and evidence verification',
       },
       {
-        title: 'Blockchain',
-        description: 'Certificate verification, smart contracts, IPFS, QR verification flows',
+        title: 'Computer vision',
+        description: 'Classification and real-time detection with TensorFlow/Keras and MediaPipe',
       },
       {
-        title: 'AI-IoT',
-        description: 'MediaPipe workflows, ESP32, Raspberry Pi, MQTT monitoring and alerting',
+        title: 'Production engineering',
+        description: 'Full-stack and mobile delivery with APIs, data, Docker, and CI',
       },
     ],
     sections: {
       about: {
-        eyebrow: 'About',
-        title: 'A junior developer profile built around practical systems.',
-        description:
-          'My work focuses on clear user interfaces, reliable backend flows, and technical projects that connect web development with blockchain, AI, and IoT workflows.',
+        title: 'Applied AI, backed by practical engineering.',
+        description: 'From retrieval and model workflows to APIs, interfaces, deployment, and product integration.',
       },
       skills: {
-        eyebrow: 'Skills',
-        title: 'Technical skill set',
-        description: 'Grouped for fast recruiter scanning without skill bars or inflated percentages.',
+        title: 'AI-first capabilities. Broad engineering range.',
+        description: 'Core AI skills first, supported by the languages, platforms, and tools used to ship complete products.',
       },
       experience: {
-        eyebrow: 'Experience',
-        title: 'Internship experience',
-        description:
-          'A focused on-site internship around AI drowsiness detection, React UI work, and IoT monitoring flows.',
+        title: 'From production software to applied AI.',
+        description: 'Full-stack product delivery, computer vision, and real-time IoT monitoring in practical environments.',
       },
       projects: {
-        eyebrow: 'Projects',
-        title: 'Featured engineering work',
-        description: 'CertChain is the flagship project because it shows the strongest end-to-end system scope.',
+        title: 'Selected AI and software systems.',
+        description: 'Focused work across NLP/RAG, computer vision, LLM applications, automation, and software engineering.',
+      },
+      liveProjects: {
+        title: 'Built, deployed, and ready to explore.',
+        description: 'Three live products spanning blockchain verification, production web delivery, and academic NLP search.',
       },
       credentials: {
-        eyebrow: 'Credentials',
-        title: 'Education, awards, and certifications',
-        description: 'Records are presented as credential cards, with certificate evidence grouped in Google Drive.',
+        title: 'Education and achievements.',
+        description: 'Computer Science engineering, AI-focused competition results, and continued technical learning.',
       },
       contact: {
-        eyebrow: 'Contact',
-        title: 'Open to junior software engineering opportunities.',
-        description:
-          'Open to Junior Software Engineer, Full-stack Developer, React Developer, AI-IoT, and Blockchain Developer opportunities.',
+        title: 'Let’s build useful AI.',
+        description: 'Open to Applied AI and Software Engineering opportunities.',
       },
     },
     aboutHighlights: [
       {
-        title: 'Full-stack development',
-        description:
-          'Builds practical React interfaces, REST API flows, authentication, database-backed features, and deployment-ready project structures.',
+        title: 'NLP / RAG',
+        description: 'Hybrid search and grounded Q&A with BM25, FAISS, RRF, and evidence verification.',
       },
       {
-        title: 'Blockchain verification',
-        description:
-          'Focuses on certificate issuing, revocation, QR verification, IPFS records, and smart contract-backed verification flows.',
+        title: 'Computer Vision & Deep Learning',
+        description: 'Image classification and real-time detection with CNNs, transfer learning, TensorFlow/Keras, and MediaPipe.',
       },
       {
-        title: 'AI applications',
-        description:
-          'Works with recognition workflows, model inference APIs, image upload experiences, and dashboard-style frontend states.',
+        title: 'LLM Applications',
+        description: 'Local and cloud LLM integrations with Ollama, Groq, Claude API, and support workflows.',
       },
       {
-        title: 'AI-IoT workflows',
-        description:
-          'Supports monitoring and alerting flows using React UI, MediaPipe workflows, ESP32, Raspberry Pi, MQTT, camera module, and buzzer.',
+        title: 'Production Software Engineering',
+        description: 'APIs, databases, full-stack delivery, Git, Docker, and CI with FastAPI and NestJS.',
       },
     ],
     skillTitles: {
-      'Programming Languages': 'Programming Languages',
-      Frontend: 'Frontend',
-      Backend: 'Backend',
-      Databases: 'Databases',
       'AI / Machine Learning': 'AI / Machine Learning',
-      Blockchain: 'Blockchain',
-      IoT: 'IoT',
+      'NLP / RAG / LLM': 'NLP / RAG / LLM',
+      'Applied AI / IoT & Automation': 'Applied AI / IoT & Automation',
+      'Programming Languages': 'Programming Languages',
+      'Frontend / Application Development': 'Frontend / Application Development',
+      'Backend & APIs': 'Backend & APIs',
+      Databases: 'Databases',
+      'Blockchain & Verification': 'Blockchain & Verification',
       'Tools & Deployment': 'Tools & Deployment',
     },
-    experience: {
-      role: 'Software Engineering Intern',
-      metadataConnector: ' · ',
-      projectLabel: 'Project',
-      bullets: [
-        'Developed frontend UI components for a web-based AI drowsiness detection system using React.',
-        'Built interfaces for displaying detection status, monitoring data, and system interaction flows.',
-        'Supported computer vision-based drowsiness detection workflows using MediaPipe.',
-        'Integrated IoT monitoring and alerting workflows using ESP32, Raspberry Pi, MQTT, camera module, and buzzer.',
-        'Supported testing, debugging, and improving web and IoT system functionality.',
-        'Used Git, GitHub, and VS Code for source code management and development workflow.',
-      ],
+    skillTiers: {
+      ai: {
+        title: 'Core AI & Applied Intelligence',
+        description: 'Primary capabilities for building retrieval, model, vision, IoT, and AI-automation workflows.',
+      },
+      engineering: {
+        title: 'Software Engineering Foundation',
+        description: 'Languages, frameworks, platforms, and delivery tools supporting complete product development.',
+      },
     },
-    projects: {
-      CertChain: {
-        category: 'Blockchain Certificate Verification System',
-        description:
-          'Full-stack blockchain certificate verification system for issuing, managing, revoking, and verifying digital certificates by Certificate ID, PDF upload, and QR verification.',
-        features: [
-          'Certificate verification by Certificate ID, QR code, and PDF upload',
-          'SHA-256 PDF hashing using Web Crypto API',
-          'Smart contract verification with IPFS and MongoDB synchronization',
-        ],
+    experience: {
+      metadataConnector: ' · ',
+      techLabel: 'Technology',
+      items: {},
+    },
+    projects: {},
+    liveShowcase: {
+      status: '3 deployed products',
+      openProject: 'Open live website',
+    },
+    liveProjects: {
+      'certchain-live': {
+        category: 'Blockchain verification',
+        description: 'Certificate issuance and permanent verification through blockchain, IPFS, QR codes, and PDF records.',
+        previewTitle: 'Verified on-chain',
       },
-      'Farta Market Frontend': {
-        category: 'E-commerce Frontend',
-        description:
-          'E-commerce frontend with product browsing, responsive UI, SCSS styling, and Playwright end-to-end testing.',
-        features: ['Product browsing interface', 'Responsive UI components', 'End-to-end testing workflows'],
+      'phuong-nam-restaurant-live': {
+        category: 'One Mekong · Production web',
+        description: 'A polished restaurant landing experience presenting Southern Vietnamese cuisine and a direct reservation path.',
+        previewTitle: 'Phương Nam',
+        previewHint: 'Southern cuisine · Can Tho',
       },
-      'AI Currency Recognition System': {
-        category: 'AI Backend',
-        description: 'AI backend for recognizing VN, USD, and EUR banknotes using CNN and transfer learning.',
-        features: ['Model inference API', 'Currency recognition backend', 'SQLite persistence'],
-      },
-      'Currency Recognition Frontend': {
-        category: 'AI Frontend',
-        description:
-          'Frontend for AI currency recognition with image upload, preview, confidence display, history, filtering, pagination, export, and dashboard.',
-        features: ['Drag-and-drop upload', 'Confidence display', 'History filters and export', 'Dashboard interface'],
-      },
-      'PERN Stack Product Store': {
-        category: 'Full-stack Product App',
-        description: 'Product management app using the PERN Stack with REST APIs and PostgreSQL.',
-        features: ['Product management UI', 'REST APIs', 'PostgreSQL-backed data flows'],
+      'nlp-academic-search-live': {
+        category: 'NLP / RAG application',
+        description: 'Hybrid academic retrieval and grounded Q&A with traceable citations and evidence verification.',
+        previewTitle: 'Grounded answer',
+        previewHint: 'academic retrieval',
       },
     },
     education: {
-      degree: 'Computer Science',
+      degree: "Engineer's Degree, Computer Science",
+      graduation: 'Graduated August 2026',
       classification: 'Good classification',
       gpaLabel: 'GPA',
       courseworkLabel: 'Relevant coursework',
     },
-    award: {
-      title: 'Auto Race 2024 - Third Prize',
-      description: 'Recognized as a third-prize team member in Auto Race 2024.',
-    },
+    awards: {},
+    awardTeamLabel: 'Team',
     certifications: {
       openFolder: 'Open Certificates Folder',
       noIssuer: '',
     },
     contact: {
-      portfolioLabel: 'CertChain Live Demo',
-      graduation: 'Expected graduation: 10/2026',
+      portfolioLabel: 'Portfolio website',
+      liveProjectsLabel: 'Explore 3 live products',
+      graduation: 'Graduated August 2026',
     },
-    footer: 'Built as a focused developer portfolio for recruiter review.',
+    footer: 'Applied AI and software-engineering portfolio.',
   },
   vi: {
     aria: {
@@ -297,166 +313,223 @@ export const translations: Record<Language, TranslationDictionary> = {
       viewGithub: 'Xem GitHub',
       viewProjects: 'Xem dự án',
     },
-    brandSubtitle: 'Junior Software Engineer',
-    hero: {
-      badge: 'Junior Software Engineer',
-      headline: 'Xây dựng ứng dụng full-stack, blockchain và AI-IoT.',
-      title: 'Junior Software Engineer | Full-stack Developer',
-      description:
-        'Sinh viên Khoa học Máy tính tập trung vào React, Next.js, Node.js, hệ thống xác thực blockchain, ứng dụng AI và quy trình giám sát IoT.',
-      focusLine: 'React · Next.js · Node.js · Solidity · Python · MediaPipe · IoT',
-      identityLabel: 'Hồ sơ sẵn sàng',
-      status: 'Sẵn sàng cho vị trí Junior Developer',
-      dashboard: 'Portfolio dashboard',
-      featuredProject: 'Dự án nổi bật',
+    projectLinkLabels: {
+      github: 'GitHub',
+      demo: 'Demo',
+      backend: 'Backend',
+      frontend: 'Frontend',
+      docs: 'Tài liệu API',
     },
-    focusAreas: ['Full-stack', 'Blockchain', 'AI apps', 'AI-IoT'],
+    brandSubtitle: 'AI & Software Engineer',
+    hero: {
+      badge: 'Kỹ sư Khoa học Máy tính',
+      headline: 'AI ứng dụng, được xây dựng cho bài toán thực tế.',
+      title: 'AI Engineer | Software Engineer',
+      description:
+        'Kỹ sư Khoa học Máy tính xây dựng ứng dụng NLP/RAG, Computer Vision và LLM, với nền tảng phát triển phần mềm production thực tế.',
+      focusLine: 'Python · FastAPI · RAG · TensorFlow/Keras · Computer Vision · LLM · Docker',
+      status: 'Sẵn sàng cho các vị trí AI & Software Engineering',
+      dashboard: 'AI & Software Engineer',
+      featuredProject: 'Dự án tiêu biểu',
+      featuredSummary: 'Tìm kiếm học thuật hybrid và grounded Q&A với BM25, dense retrieval, RRF và kiểm chứng evidence.',
+    },
+    focusAreas: ['NLP / RAG', 'Computer Vision', 'Ứng dụng LLM', 'Software Engineering'],
     summary: [
       {
-        title: 'React + Full-stack',
-        description: 'Giao diện frontend, REST APIs, xác thực và luồng dữ liệu với database',
+        title: 'Hệ thống NLP / RAG',
+        description: 'Hybrid retrieval, grounded answers và kiểm chứng evidence',
       },
       {
-        title: 'Blockchain',
-        description: 'Xác thực chứng chỉ, smart contract, IPFS và quy trình QR verification',
+        title: 'Computer Vision',
+        description: 'Phân loại và nhận diện thời gian thực với TensorFlow/Keras và MediaPipe',
       },
       {
-        title: 'AI-IoT',
-        description: 'MediaPipe, ESP32, Raspberry Pi, MQTT, giám sát và cảnh báo',
+        title: 'Production engineering',
+        description: 'Phát triển full-stack và mobile với APIs, data, Docker và CI',
       },
     ],
     sections: {
       about: {
-        eyebrow: 'Giới thiệu',
-        title: 'Hồ sơ junior developer tập trung vào hệ thống thực tế.',
-        description:
-          'Mình tập trung xây dựng giao diện rõ ràng, backend flow ổn định và các dự án kỹ thuật kết nối web development với blockchain, AI và IoT.',
+        title: 'AI ứng dụng, trên nền tảng engineering thực tế.',
+        description: 'Từ retrieval và model workflow đến API, giao diện, triển khai và tích hợp sản phẩm.',
       },
       skills: {
-        eyebrow: 'Kỹ năng',
-        title: 'Nhóm kỹ năng kỹ thuật',
-        description: 'Được nhóm để recruiter dễ đọc nhanh, không dùng thanh phần trăm hay thông số phóng đại.',
+        title: 'Năng lực AI cốt lõi. Nền tảng engineering rộng.',
+        description: 'Ưu tiên kỹ năng AI, cùng ngôn ngữ, nền tảng và công cụ cần thiết để hoàn thiện sản phẩm.',
       },
       experience: {
-        eyebrow: 'Kinh nghiệm',
-        title: 'Kinh nghiệm thực tập',
-        description:
-          'Kỳ thực tập on-site tập trung vào AI drowsiness detection, React UI và quy trình giám sát IoT.',
+        title: 'Từ production software đến AI ứng dụng.',
+        description: 'Phát triển sản phẩm full-stack, Computer Vision và giám sát IoT thời gian thực trong môi trường thực tế.',
       },
       projects: {
-        eyebrow: 'Dự án',
-        title: 'Các dự án kỹ thuật nổi bật',
-        description: 'CertChain là dự án chính vì thể hiện rõ nhất phạm vi full-stack end-to-end.',
+        title: 'Các hệ thống AI và phần mềm tiêu biểu.',
+        description: 'Tập trung vào NLP/RAG, Computer Vision, ứng dụng LLM, automation và Software Engineering.',
+      },
+      liveProjects: {
+        title: 'Đã xây dựng, triển khai và sẵn sàng trải nghiệm.',
+        description: 'Ba sản phẩm đang hoạt động, trải dài từ xác thực blockchain đến website production và tìm kiếm học thuật bằng NLP.',
       },
       credentials: {
-        eyebrow: 'Hồ sơ',
-        title: 'Học vấn, hoạt động và chứng chỉ',
-        description: 'Thông tin được trình bày như credential cards, kèm thư mục Google Drive để recruiter kiểm tra.',
+        title: 'Học vấn và thành tích.',
+        description: 'Đào tạo Kỹ sư Khoa học Máy tính, thành tích cuộc thi AI và quá trình học tập kỹ thuật.',
       },
       contact: {
-        eyebrow: 'Liên hệ',
-        title: 'Sẵn sàng cho cơ hội junior software engineering.',
-        description:
-          'Quan tâm đến các vị trí Junior Software Engineer, Full-stack Developer, React Developer, AI-IoT và Blockchain Developer.',
+        title: 'Cùng xây dựng AI hữu ích.',
+        description: 'Sẵn sàng cho cơ hội Applied AI và Software Engineering.',
       },
     },
     aboutHighlights: [
       {
-        title: 'Full-stack development',
-        description:
-          'Xây dựng giao diện React thực tế, REST API flows, xác thực, tính năng có database và cấu trúc project dễ triển khai.',
+        title: 'NLP / RAG',
+        description: 'Hybrid search và grounded Q&A với BM25, FAISS, RRF và kiểm chứng evidence.',
       },
       {
-        title: 'Blockchain verification',
-        description:
-          'Tập trung vào cấp phát chứng chỉ, thu hồi, QR verification, IPFS records và quy trình xác thực bằng smart contract.',
+        title: 'Computer Vision & Deep Learning',
+        description: 'Phân loại ảnh và nhận diện thời gian thực với CNN, transfer learning, TensorFlow/Keras và MediaPipe.',
       },
       {
-        title: 'AI applications',
-        description:
-          'Làm việc với recognition workflows, model inference APIs, trải nghiệm upload hình ảnh và dashboard states.',
+        title: 'Ứng dụng LLM',
+        description: 'Tích hợp LLM local/cloud với Ollama, Groq, Claude API và các support workflow.',
       },
       {
-        title: 'AI-IoT workflows',
-        description:
-          'Hỗ trợ quy trình giám sát/cảnh báo bằng React UI, MediaPipe, ESP32, Raspberry Pi, MQTT, camera module và buzzer.',
+        title: 'Production Software Engineering',
+        description: 'API, database, full-stack delivery, Git, Docker và CI với FastAPI và NestJS.',
       },
     ],
     skillTitles: {
-      'Programming Languages': 'Programming Languages',
-      Frontend: 'Frontend',
-      Backend: 'Backend',
-      Databases: 'Databases',
       'AI / Machine Learning': 'AI / Machine Learning',
-      Blockchain: 'Blockchain',
-      IoT: 'IoT',
-      'Tools & Deployment': 'Tools & Deployment',
+      'NLP / RAG / LLM': 'NLP / RAG / LLM',
+      'Applied AI / IoT & Automation': 'AI ứng dụng / IoT & Automation',
+      'Programming Languages': 'Ngôn ngữ lập trình',
+      'Frontend / Application Development': 'Frontend / Phát triển ứng dụng',
+      'Backend & APIs': 'Backend & APIs',
+      Databases: 'Databases',
+      'Blockchain & Verification': 'Blockchain & Verification',
+      'Tools & Deployment': 'Công cụ & Triển khai',
+    },
+    skillTiers: {
+      ai: {
+        title: 'Năng lực AI & ứng dụng cốt lõi',
+        description: 'Các năng lực chính để xây dựng retrieval, model, Computer Vision, IoT và quy trình AI automation.',
+      },
+      engineering: {
+        title: 'Nền tảng Software Engineering',
+        description: 'Ngôn ngữ, framework, nền tảng và công cụ triển khai phục vụ quá trình phát triển sản phẩm hoàn chỉnh.',
+      },
     },
     experience: {
-      role: 'Software Engineering Intern',
       metadataConnector: ' · ',
-      projectLabel: 'Dự án',
-      bullets: [
-        'Phát triển các React UI components cho hệ thống AI drowsiness detection trên web.',
-        'Xây dựng giao diện hiển thị trạng thái nhận diện, dữ liệu giám sát và luồng tương tác hệ thống.',
-        'Hỗ trợ quy trình computer vision-based drowsiness detection sử dụng MediaPipe.',
-        'Tích hợp quy trình giám sát và cảnh báo IoT với ESP32, Raspberry Pi, MQTT, camera module và buzzer.',
-        'Hỗ trợ testing, debugging và cải thiện chức năng của hệ thống web và IoT.',
-        'Sử dụng Git, GitHub và VS Code cho quản lý source code và development workflow.',
-      ],
+      techLabel: 'Công nghệ',
+      items: {
+        'onemekong-software-engineer': {
+          role: 'Software Engineer (Full-Stack)',
+          period: 'Tháng 06/2026 – Hiện tại',
+          bullets: [
+            'Phụ trách các tính năng production cho đặt món và đặt phòng khách sạn, triển khai luồng backend và frontend cho duyệt menu, giỏ hàng, đặt món, phân phòng và quản trị nhà hàng.',
+            'Xây dựng xác thực OTP qua số điện thoại và chuyển nhà cung cấp SMS từ Firebase sang eSMS sau các vấn đề về độ ổn định.',
+            'Đóng góp vào quy trình đặt phòng và phân phòng nội bộ, thay thế sự phụ thuộc vào hệ thống POS bên thứ ba.',
+          ],
+        },
+        'tien-phong-ai-iot-intern': {
+          role: 'Software Engineering Intern — AI Drowsiness Detection & IoT Monitoring',
+          period: 'Tháng 10/2025 – Tháng 06/2026',
+          mode: 'Làm việc trực tiếp',
+          bullets: [
+            'Xây dựng React UI components cho hệ thống AI phát hiện buồn ngủ thời gian thực và hỗ trợ quy trình nhận diện Computer Vision bằng MediaPipe.',
+            'Đóng góp vào tích hợp IoT với ESP32, Raspberry Pi, MQTT, camera và buzzer để cảnh báo thời gian thực.',
+            'Hỗ trợ testing và debugging qua quy trình Git/GitHub.',
+          ],
+        },
+      },
     },
     projects: {
-      CertChain: {
-        category: 'Blockchain Certificate Verification System',
-        description:
-          'Hệ thống full-stack xác thực chứng chỉ bằng blockchain, hỗ trợ cấp phát, quản lý, thu hồi và xác thực chứng chỉ bằng Certificate ID, PDF upload và QR verification.',
+      'NLP Academic Search & RAG Engine': {
+        category: 'NLP / Information Retrieval / RAG',
+        description: 'Xây dựng hệ thống tìm kiếm học thuật local-first và grounded Q&A, kết hợp BM25 với dense retrieval qua Reciprocal Rank Fusion và tùy chọn cross-encoder reranking.',
         features: [
-          'Xác thực chứng chỉ bằng Certificate ID, QR code và PDF upload',
-          'SHA-256 PDF hashing bằng Web Crypto API',
-          'Smart contract verification kết hợp IPFS và đồng bộ MongoDB',
+          'Kiểm chứng citation và evidence cho câu trả lời grounded',
+          'FastAPI SSE streaming với giao diện Streamlit',
+          'Versioning cho corpus và index với cấu hình triển khai local/cloud',
+          'Continuous integration bằng GitHub Actions',
         ],
       },
-      'Farta Market Frontend': {
-        category: 'E-commerce Frontend',
-        description:
-          'Frontend thương mại điện tử có product browsing, responsive UI, SCSS styling và Playwright end-to-end testing.',
-        features: ['Giao diện duyệt sản phẩm', 'Responsive UI components', 'End-to-end testing workflows'],
-      },
       'AI Currency Recognition System': {
-        category: 'AI Backend',
-        description: 'Backend AI nhận diện tiền VN, USD và EUR bằng CNN và transfer learning.',
-        features: ['Model inference API', 'Currency recognition backend', 'SQLite persistence'],
+        category: 'Computer Vision / Deep Learning',
+        description: 'Mô hình CNN baseline và transfer learning để phân loại tiền VN, USD và EUR, cung cấp qua Python REST API cùng giao diện React.',
+        features: [
+          'Quy trình CNN baseline và EfficientNetB0 transfer learning',
+          'REST API phân loại tiền VN, USD và EUR',
+          'Giao diện React cho quy trình nhận diện từ hình ảnh',
+        ],
       },
-      'Currency Recognition Frontend': {
-        category: 'AI Frontend',
-        description:
-          'Frontend cho hệ thống nhận diện tiền với image upload, preview, confidence display, history, filtering, pagination, export và dashboard.',
-        features: ['Drag-and-drop upload', 'Confidence display', 'History filters and export', 'Dashboard interface'],
+      'Farta Market — AI Support Chatbot': {
+        category: 'Ứng dụng LLM / E-commerce',
+        description: 'Xây dựng AI chat backend linh hoạt dùng Ollama local hoặc Anthropic Claude API để trả lời về trạng thái đơn hàng và tồn kho, tích hợp với storefront.',
+        features: ['Linh hoạt lựa chọn LLM provider local hoặc cloud', 'Quy trình hỗ trợ trạng thái đơn hàng và tồn kho', 'Tích hợp storefront với ứng dụng React'],
       },
-      'PERN Stack Product Store': {
-        category: 'Full-stack Product App',
-        description: 'Ứng dụng quản lý sản phẩm dùng PERN Stack với REST APIs và PostgreSQL.',
-        features: ['Product management UI', 'REST APIs', 'PostgreSQL-backed data flows'],
+      'Auto Video Pipeline': {
+        category: 'AI Content Automation',
+        description: 'Pipeline tự host để tự động hóa video ngắn tiếng Việt, dùng Groq viết kịch bản, tạo ảnh, Edge-TTS lồng tiếng, FFmpeg dựng video, n8n điều phối và tự động đăng TikTok.',
+        features: ['Tự động tạo kịch bản, hình ảnh và giọng đọc tiếng Việt', 'Dựng video bằng FFmpeg qua n8n', 'Tự động đăng qua TikTok Content Posting API'],
+      },
+      CertChain: {
+        category: 'Hệ thống xác thực chứng chỉ Blockchain',
+        description: 'Hệ thống full-stack xác thực chứng chỉ bằng blockchain, hỗ trợ cấp, quản lý, thu hồi và xác thực qua Certificate ID, PDF upload và QR.',
+        features: ['Xác thực qua Certificate ID, QR và PDF upload', 'Smart contract kết hợp IPFS và đồng bộ MongoDB', 'Quy trình quản trị để cấp, quản lý và thu hồi chứng chỉ'],
+      },
+    },
+    liveShowcase: {
+      status: '3 sản phẩm đã triển khai',
+      openProject: 'Mở website thực tế',
+    },
+    liveProjects: {
+      'certchain-live': {
+        category: 'Xác thực Blockchain',
+        description: 'Nền tảng cấp và xác thực chứng chỉ lâu dài bằng blockchain, IPFS, QR và hồ sơ PDF.',
+        previewTitle: 'Đã xác thực on-chain',
+      },
+      'phuong-nam-restaurant-live': {
+        category: 'One Mekong · Website production',
+        description: 'Landing page nhà hàng chỉn chu, giới thiệu ẩm thực Nam Bộ và dẫn khách hàng trực tiếp tới hành động đặt bàn.',
+        previewTitle: 'Phương Nam',
+        previewHint: 'Ẩm thực Nam Bộ · Cần Thơ',
+      },
+      'nlp-academic-search-live': {
+        category: 'Ứng dụng NLP / RAG',
+        description: 'Tìm kiếm học thuật hybrid và grounded Q&A với citation rõ ràng cùng quy trình kiểm chứng evidence.',
+        previewTitle: 'Câu trả lời có căn cứ',
+        previewHint: 'tìm kiếm học thuật',
       },
     },
     education: {
-      degree: 'Khoa học Máy tính',
-      classification: 'Xếp loại Good',
+      degree: 'Bằng Kỹ sư, Khoa học Máy tính',
+      graduation: 'Tốt nghiệp tháng 08/2026',
+      classification: 'Xếp loại Khá',
       gpaLabel: 'GPA',
       courseworkLabel: 'Môn học liên quan',
     },
-    award: {
-      title: 'Auto Race 2024 - Third Prize',
-      description: 'Thành viên đội đạt giải ba tại Auto Race 2024.',
+    awards: {
+      'auto-race-2024': {
+        title: 'Giải Ba — Auto Race 2024',
+        date: 'Tháng 12/2024',
+        description: 'Ứng dụng Deep Learning trong dự án đua xe tự hành.',
+      },
+      'ai-olympic-2025': {
+        title: 'Top 10 — AI Olympic 2025',
+        date: 'Tháng 03/2025',
+        description: 'Thử thách Computer Vision tập trung nhận diện bệnh trên cây lúa từ hình ảnh.',
+      },
     },
+    awardTeamLabel: 'Đội',
     certifications: {
       openFolder: 'Mở thư mục chứng chỉ',
       noIssuer: '',
     },
     contact: {
-      portfolioLabel: 'Demo CertChain',
-      graduation: 'Dự kiến tốt nghiệp: 10/2026',
+      portfolioLabel: 'Website portfolio',
+      liveProjectsLabel: 'Khám phá 3 sản phẩm thực tế',
+      graduation: 'Tốt nghiệp tháng 08/2026',
     },
-    footer: 'Portfolio được xây dựng tập trung cho recruiter review.',
+    footer: 'Portfolio AI ứng dụng và Software Engineering.',
   },
 };

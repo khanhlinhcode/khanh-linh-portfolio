@@ -2,23 +2,6 @@ import { useEffect, useState } from 'react';
 import type { Language } from '../i18n/translations';
 
 const LANGUAGE_STORAGE_KEY = 'language';
-const LANGUAGE_TRANSITION_MS = 300;
-
-let languageTransitionTimeout: number | undefined;
-
-function startLanguageTransition() {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  window.clearTimeout(languageTransitionTimeout);
-  document.documentElement.classList.remove('is-language-switching');
-  void document.documentElement.offsetWidth;
-  document.documentElement.classList.add('is-language-switching');
-  languageTransitionTimeout = window.setTimeout(() => {
-    document.documentElement.classList.remove('is-language-switching');
-  }, LANGUAGE_TRANSITION_MS);
-}
 
 function getInitialLanguage(): Language {
   if (typeof window === 'undefined') {
@@ -38,7 +21,6 @@ export function useLanguage() {
   }, [language]);
 
   function toggleLanguage() {
-    startLanguageTransition();
     setLanguage((currentLanguage) => (currentLanguage === 'en' ? 'vi' : 'en'));
   }
 
@@ -47,7 +29,6 @@ export function useLanguage() {
       return;
     }
 
-    startLanguageTransition();
     setLanguage(nextLanguage);
   }
 

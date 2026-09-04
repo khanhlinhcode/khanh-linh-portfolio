@@ -1,4 +1,4 @@
-import { CalendarDays, ExternalLink, FileDown, Github, Mail, MapPin, Phone } from 'lucide-react';
+import { CalendarDays, FileDown, Github, Mail, MapPin, Phone, Radio } from 'lucide-react';
 import { profile } from '../data/profile';
 import type { TranslationDictionary } from '../i18n/translations';
 import { AppButton } from './AppButton';
@@ -34,21 +34,21 @@ export default function ContactSection({ t }: { t: TranslationDictionary }) {
       <SectionTitle {...t.sections.contact} />
       <div className="contact-panel">
         <div className="contact-grid">
-          <a href={`mailto:${profile.email}`}>
+          <a data-liquid-hover="control" href={`mailto:${profile.email}`}>
             <Mail size={20} aria-hidden="true" />
             <span>{profile.email}</span>
           </a>
-          <a href={`tel:${profile.phone}`}>
+          <a data-liquid-hover="control" href={`tel:${profile.phone}`}>
             <Phone size={20} aria-hidden="true" />
             <span>{profile.phone}</span>
           </a>
-          <a href={profile.github} target="_blank" rel="noopener noreferrer">
+          <a data-liquid-hover="control" href={profile.github} target="_blank" rel="noopener noreferrer">
             <Github size={20} aria-hidden="true" />
             <span>github.com/khanhlinhcode</span>
           </a>
-          <a href={profile.portfolio} target="_blank" rel="noopener noreferrer">
-            <ExternalLink size={20} aria-hidden="true" />
-            <span>{t.contact.portfolioLabel}</span>
+          <a data-liquid-hover="control" href="#live-work">
+            <Radio size={20} aria-hidden="true" />
+            <span>{t.contact.liveProjectsLabel}</span>
           </a>
           <span>
             <MapPin size={20} aria-hidden="true" />

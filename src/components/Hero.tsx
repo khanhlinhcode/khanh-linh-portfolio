@@ -4,14 +4,6 @@ import { profile } from '../data/profile';
 import type { TranslationDictionary } from '../i18n/translations';
 import { AppButton } from './AppButton';
 
-function getProjectCopy(project: Project, t: TranslationDictionary) {
-  return t.projects[project.name] ?? {
-    category: project.category,
-    description: project.description,
-    features: project.features,
-  };
-}
-
 function HeroCvButton({ label, comingSoonLabel }: { label: string; comingSoonLabel: string }) {
   if (profile.cvUrl) {
     return (
@@ -29,11 +21,11 @@ function HeroCvButton({ label, comingSoonLabel }: { label: string; comingSoonLab
 }
 
 function HeroShowcase({ featuredProject, t }: { featuredProject: Project; t: TranslationDictionary }) {
-  const copy = getProjectCopy(featuredProject, t);
   const focusIcons = [Code2, ShieldCheck, Sparkles, Blocks];
+  const showcaseLinks = featuredProject.links.filter((link) => link.kind === 'github' || link.kind === 'demo');
 
   return (
-    <aside className="hero-showcase" aria-label="Portfolio snapshot">
+    <aside className="hero-showcase" aria-label="Portfolio snapshot" data-liquid-hover="card">
       <div className="status-band">
         <span className="status-dot" aria-hidden="true" />
         <span>{t.hero.status}</span>
@@ -42,7 +34,7 @@ function HeroShowcase({ featuredProject, t }: { featuredProject: Project; t: Tra
       <div className="showcase-profile">
         <img src={profile.avatar} alt="" aria-hidden="true" />
         <div>
-          <span className="status-pill">{t.hero.dashboard}</span>
+          <span className="status-pill" data-liquid-hover="chip">{t.hero.dashboard}</span>
           <strong>{profile.name}</strong>
           <small>{profile.location}</small>
         </div>
@@ -54,21 +46,29 @@ function HeroShowcase({ featuredProject, t }: { featuredProject: Project; t: Tra
           <ShieldCheck size={18} aria-hidden="true" />
         </div>
         <h3>{featuredProject.name}</h3>
-        <p>{copy.description}</p>
-        <div className="mini-stack" aria-label="CertChain stack">
-          {featuredProject.stack.slice(0, 7).map((item) => (
-            <span key={item}>{item}</span>
+        <p>{t.hero.featuredSummary}</p>
+        <div className="mini-stack" aria-label={`${featuredProject.name} technology stack`}>
+          {featuredProject.stack.slice(0, 5).map((item) => (
+            <span data-liquid-hover="chip" key={item}>{item}</span>
           ))}
         </div>
-        <div className="showcase-links">
-          <a href={featuredProject.github} target="_blank" rel="noopener noreferrer">
-            {t.actions.github} <ExternalLink size={14} aria-hidden="true" />
-          </a>
-          {featuredProject.demo ? (
-            <a href={featuredProject.demo} target="_blank" rel="noopener noreferrer">
-              Demo <ExternalLink size={14} aria-hidden="true" />
-            </a>
-          ) : null}
+        <div className="showcase-links" aria-label={`${featuredProject.name} links`}>
+          {showcaseLinks.map((link) => {
+            const label = (link.kind && t.projectLinkLabels[link.kind]) || link.label;
+
+            return (
+              <a
+                aria-label={`${label} — ${featuredProject.name}`}
+                data-liquid-hover="control"
+                href={link.url}
+                key={`${link.kind ?? link.label}-${link.url}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {label} <ExternalLink size={14} aria-hidden="true" />
+              </a>
+            );
+          })}
         </div>
       </div>
 
@@ -98,11 +98,10 @@ export default function Hero({ featuredProject, t }: { featuredProject: Project;
             <div className="hero-identity">
               <img src={profile.avatar} alt="Khanh Linh To avatar" />
               <div>
-                <span className="eyebrow">{t.hero.identityLabel}</span>
+                <span className="eyebrow">{t.hero.badge}</span>
                 <strong>{profile.name}</strong>
               </div>
             </div>
-            <p className="eyebrow">{t.hero.badge}</p>
             <h1 id="hero-title">{t.hero.headline}</h1>
             <p className="hero-title">{t.hero.title}</p>
             <p className="hero-text">{t.hero.description}</p>
@@ -117,7 +116,7 @@ export default function Hero({ featuredProject, t }: { featuredProject: Project;
             </div>
             <div className="hero-footer" aria-label="Profile focus">
               {heroTechnologies.map((technology) => (
-                <span key={technology}>{technology}</span>
+                <span data-liquid-hover="chip" key={technology}>{technology}</span>
               ))}
             </div>
           </div>

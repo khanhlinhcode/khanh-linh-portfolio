@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 export type Theme = 'dark' | 'light';
 
-const THEME_STORAGE_KEY = 'theme';
-const THEME_TRANSITION_MS = 300;
+const THEME_STORAGE_KEY = 'portfolio-theme-v2';
+const THEME_TRANSITION_MS = 200;
 
 let themeTransitionTimeout: number | undefined;
 
@@ -13,8 +13,6 @@ function startThemeTransition() {
   }
 
   window.clearTimeout(themeTransitionTimeout);
-  document.documentElement.classList.remove('is-theme-switching');
-  void document.documentElement.offsetWidth;
   document.documentElement.classList.add('is-theme-switching');
   themeTransitionTimeout = window.setTimeout(() => {
     document.documentElement.classList.remove('is-theme-switching');
@@ -31,7 +29,7 @@ function getInitialTheme(): Theme {
     return storedTheme;
   }
 
-  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  return 'dark';
 }
 
 export function useTheme() {

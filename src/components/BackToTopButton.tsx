@@ -7,11 +7,17 @@ export function BackToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    let currentVisibility = window.scrollY > SHOW_AFTER_PX;
     const updateVisibility = () => {
-      setIsVisible(window.scrollY > SHOW_AFTER_PX);
+      const nextVisibility = window.scrollY > SHOW_AFTER_PX;
+
+      if (nextVisibility !== currentVisibility) {
+        currentVisibility = nextVisibility;
+        setIsVisible(nextVisibility);
+      }
     };
 
-    updateVisibility();
+    setIsVisible(currentVisibility);
     window.addEventListener('scroll', updateVisibility, { passive: true });
 
     return () => window.removeEventListener('scroll', updateVisibility);
@@ -31,6 +37,7 @@ export function BackToTopButton() {
       aria-hidden={!isVisible}
       aria-label="Back to top"
       className={`back-to-top ${isVisible ? 'is-visible' : ''}`}
+      data-liquid-hover="control"
       onClick={scrollToTop}
       tabIndex={isVisible ? 0 : -1}
       type="button"

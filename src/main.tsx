@@ -7,6 +7,8 @@ import CredentialsSection from './components/CredentialsSection';
 import ExperienceSection from './components/ExperienceSection';
 import Header from './components/Header';
 import Hero from './components/Hero';
+import LiquidJourney from './components/LiquidJourney';
+import LiveProjectsSection from './components/LiveProjectsSection';
 import ProjectsSection from './components/ProjectsSection';
 import SkillsSection from './components/SkillsSection';
 import SummaryStrip from './components/SummaryStrip';
@@ -24,6 +26,7 @@ function App() {
   return (
     <>
       <Header language={language} setLanguage={setLanguage} t={t} />
+      <LiquidJourney />
 
       <main id="top">
         <Hero featuredProject={featuredProject} t={t} />
@@ -34,6 +37,7 @@ function App() {
         <ProjectsSection t={t} />
         <CredentialsSection t={t} />
         <ContactSection t={t} />
+        <LiveProjectsSection t={t} />
       </main>
 
       <footer className="site-footer">

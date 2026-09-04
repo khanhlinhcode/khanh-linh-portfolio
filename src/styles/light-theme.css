@@ -1,0 +1,81 @@
+[data-theme="light"] {
+  --apple-accent-gradient: linear-gradient(120deg, #0057b8, #7a2fb5, #c9184a);
+}
+
+[data-theme="light"] body {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(15, 155, 181, 0.16), transparent 34%),
+    radial-gradient(circle at 88% 6%, rgba(95, 99, 217, 0.14), transparent 32%),
+    radial-gradient(circle at 56% 44%, rgba(22, 119, 210, 0.07), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(246, 248, 251, 0.96) 58%, var(--bg)),
+    linear-gradient(90deg, rgba(14, 26, 43, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(14, 26, 43, 0.035) 1px, transparent 1px),
+    var(--bg);
+  background-size: auto, auto, auto, auto, 56px 56px, 56px 56px, auto;
+}
+
+[data-theme="light"] body::before {
+  background:
+    linear-gradient(115deg, transparent 0 42%, rgba(255, 255, 255, 0.5) 42% 58%, transparent 58%),
+    radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, 0.76), transparent 42%);
+  opacity: 0.64;
+}
+
+[data-theme="light"] .hero {
+  background:
+    radial-gradient(circle at 16% 16%, rgba(15, 155, 181, 0.12), transparent 30%),
+    radial-gradient(circle at 88% 20%, rgba(95, 99, 217, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(246, 248, 251, 0.94)),
+    linear-gradient(102deg, transparent 0%, transparent 56%, rgba(95, 99, 217, 0.1) 56%, rgba(95, 99, 217, 0.035) 100%),
+    linear-gradient(90deg, rgba(14, 26, 43, 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(14, 26, 43, 0.032) 1px, transparent 1px),
+    var(--apple-bg-gradient);
+  background-size: auto, auto, auto, auto, 72px 72px, 72px 72px, auto;
+}
+
+[data-theme="light"] .hero::before {
+  border-color: rgba(15, 155, 181, 0.16);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62), transparent 48%),
+    linear-gradient(0deg, rgba(14, 26, 43, 0.045) 1px, transparent 1px),
+    rgba(255, 255, 255, 0.38);
+  background-size: auto, 100% 36px, auto;
+}
+
+[data-theme="light"] h1 {
+  background: linear-gradient(135deg, #0e1a2b 8%, #006273 48%, #4647b9 88%);
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+}
+
+[data-theme="light"] .hero-showcase {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(245, 249, 252, 0.94)),
+    linear-gradient(90deg, rgba(14, 26, 43, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(14, 26, 43, 0.028) 1px, transparent 1px);
+  background-size: auto, 38px 38px, 38px 38px;
+  box-shadow:
+    var(--shadow),
+    0 0 0 8px rgba(255, 255, 255, 0.54);
+}
+
+[data-theme="light"] .summary-strip {
+  border-color: rgba(39, 53, 73, 0.12);
+  background:
+    linear-gradient(110deg, rgba(0, 98, 115, 0.045), rgba(8, 88, 180, 0.032) 54%, rgba(70, 71, 185, 0.045)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 250, 253, 0.7)),
+    var(--surface-glass);
+  color: var(--ink);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="light"] .summary-strip strong {
+  color: var(--cyan);
+}
+
+[data-theme="light"] .summary-strip span {
+  color: var(--muted);
+}

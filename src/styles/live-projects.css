@@ -1,0 +1,383 @@
+.live-projects-section {
+  padding-top: 72px;
+  padding-bottom: 96px;
+}
+
+.live-projects-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-2xl);
+  padding: 18px;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(111, 232, 213, 0.1), transparent 32%),
+    radial-gradient(circle at 92% 100%, rgba(139, 140, 255, 0.1), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    var(--surface-glass);
+  box-shadow:
+    var(--shadow-elevated),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(20px) saturate(1.14);
+}
+
+[data-theme="light"] .live-projects-shell {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(15, 155, 181, 0.1), transparent 32%),
+    radial-gradient(circle at 92% 100%, rgba(95, 99, 217, 0.09), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 250, 253, 0.72)),
+    var(--surface-glass);
+  box-shadow:
+    var(--shadow-elevated),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+.live-projects-status {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 14px;
+  color: var(--ink-2);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: var(--text-label);
+  font-weight: 600;
+}
+
+.live-status-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--cyan) 54%, transparent);
+}
+
+.live-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  perspective: 1200px;
+}
+
+.live-project-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 394px;
+  overflow: hidden;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02)),
+    rgba(7, 18, 31, 0.7);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transform-origin: 50% 100%;
+  transition:
+    border-color 240ms ease,
+    box-shadow 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="light"] .live-project-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(242, 247, 251, 0.72)),
+    rgba(255, 255, 255, 0.74);
+  box-shadow:
+    0 16px 38px rgba(20, 34, 54, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.live-project-card:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--cyan) 42%, transparent);
+  outline-offset: 3px;
+}
+
+.live-project-visual {
+  position: relative;
+  display: flex;
+  min-height: 176px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.live-project-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 44%);
+  opacity: 0.72;
+  pointer-events: none;
+  transform: translate3d(-4%, 0, 0) scale(1.02);
+  transition:
+    opacity 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.live-project-visual--blockchain {
+  gap: 9px;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(66, 199, 255, 0.2), transparent 38%),
+    linear-gradient(145deg, rgba(8, 43, 63, 0.96), rgba(16, 22, 56, 0.96));
+}
+
+.chain-node {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(175, 225, 255, 0.34);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+.chain-node--primary {
+  display: grid;
+  place-items: center;
+  background: rgba(111, 232, 213, 0.16);
+  color: #b9fff3;
+}
+
+.chain-link {
+  width: 24px;
+  height: 1px;
+  background: rgba(175, 225, 255, 0.48);
+}
+
+.live-project-visual--blockchain strong,
+.live-project-visual--nlp strong {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  color: rgba(237, 250, 255, 0.84);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.01em;
+}
+
+.live-project-visual--restaurant {
+  gap: 18px;
+  justify-content: flex-start;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 22% 50%, rgba(230, 159, 89, 0.22), transparent 34%),
+    linear-gradient(145deg, #28140d, #4a2516 56%, #1e110d);
+}
+
+.restaurant-monogram {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(255, 219, 174, 0.36);
+  border-radius: 50%;
+  color: #f4c88e;
+  font-family: "Sora", sans-serif;
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  box-shadow:
+    0 18px 30px rgba(0, 0, 0, 0.24),
+    inset 0 0 0 6px rgba(255, 255, 255, 0.025);
+}
+
+.live-project-visual--restaurant div {
+  display: grid;
+  gap: 5px;
+}
+
+.live-project-visual--restaurant strong {
+  color: #fff3e2;
+  font-family: "Sora", sans-serif;
+  font-size: 1.1rem;
+}
+
+.live-project-visual--restaurant div span {
+  color: rgba(255, 229, 200, 0.7);
+  font-size: 0.78rem;
+}
+
+.live-project-visual--nlp {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 10px;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 76% 26%, rgba(139, 140, 255, 0.24), transparent 34%),
+    linear-gradient(145deg, #101a39, #122847 60%, #0b1728);
+}
+
+.nlp-query {
+  width: 82%;
+  border: 1px solid rgba(189, 204, 255, 0.24);
+  border-radius: 10px;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(237, 242, 255, 0.78);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+}
+
+.nlp-result {
+  width: 74%;
+  height: 6px;
+  border-radius: 4px;
+  background: rgba(189, 204, 255, 0.18);
+}
+
+.nlp-result--strong {
+  width: 92%;
+  background: rgba(111, 232, 213, 0.42);
+}
+
+.nlp-result--short {
+  width: 58%;
+}
+
+.live-project-content {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: 24px;
+}
+
+.live-project-meta {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.live-project-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--cyan) 28%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--cyan) 9%, transparent);
+  color: var(--cyan);
+}
+
+.live-project-content h3 {
+  margin: 0 0 10px;
+  font-size: clamp(1.14rem, 0.5vw + 1rem, 1.34rem);
+  line-height: 1.25;
+}
+
+.live-project-content p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.62;
+}
+
+.live-project-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.live-project-domain {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.live-project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--cyan);
+  font-weight: 800;
+}
+
+.live-project-link svg {
+  transition: color 160ms ease;
+}
+
+@media (max-width: 980px) {
+  .live-projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .live-project-card {
+    display: grid;
+    min-height: 0;
+    grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.15fr);
+  }
+
+  .live-project-visual {
+    min-height: 246px;
+    border-right: 1px solid var(--line);
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .live-projects-section {
+    padding-top: 56px;
+    padding-bottom: 72px;
+  }
+
+  .live-projects-shell {
+    padding: 10px;
+  }
+
+  .live-projects-status {
+    padding: 4px 6px 12px;
+  }
+
+  .live-project-card {
+    display: flex;
+  }
+
+  .live-project-visual {
+    min-height: 160px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .live-project-content {
+    padding: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-project-visual::after,
+  .live-project-link svg {
+    transition: none;
+  }
+
+  .live-project-card:hover .live-project-visual::after,
+  .live-project-card:focus-visible .live-project-visual::after,
+  .live-project-card:hover .live-project-link svg,
+  .live-project-card:focus-visible .live-project-link svg {
+    transform: none;
+  }
+
+  .live-project-visual::after {
+    opacity: 0.84;
+  }
+}

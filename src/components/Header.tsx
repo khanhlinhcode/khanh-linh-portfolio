@@ -49,8 +49,17 @@ function useScrolledHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const updateScrollState = () => setIsScrolled(window.scrollY > 8);
-    updateScrollState();
+    let currentScrollState = window.scrollY > 8;
+    const updateScrollState = () => {
+      const nextScrollState = window.scrollY > 8;
+
+      if (nextScrollState !== currentScrollState) {
+        currentScrollState = nextScrollState;
+        setIsScrolled(nextScrollState);
+      }
+    };
+
+    setIsScrolled(currentScrollState);
     window.addEventListener('scroll', updateScrollState, { passive: true });
     return () => window.removeEventListener('scroll', updateScrollState);
   }, []);
