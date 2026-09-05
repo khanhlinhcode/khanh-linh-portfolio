@@ -68,6 +68,22 @@ const seededUnit = (seed: number) => {
   return value - Math.floor(value);
 };
 
+const limitPointStep = (start: Point, end: Point, maximumDistance: number) => {
+  const deltaX = end.x - start.x;
+  const deltaY = end.y - start.y;
+  const distance = Math.hypot(deltaX, deltaY);
+
+  if (distance <= maximumDistance || distance === 0) {
+    return end;
+  }
+
+  const ratio = maximumDistance / distance;
+  return {
+    x: start.x + deltaX * ratio,
+    y: start.y + deltaY * ratio,
+  };
+};
+
 const TRAIL_FRAME_INTERVAL = 1000 / 30;
 const MOBILE_BURST_TRAVEL_THRESHOLD = 14;
 
@@ -102,7 +118,6 @@ export default function LiquidJourney() {
     let target: Point = current;
     let tailPoint: Point = current;
     let frameId = 0;
-    let scrollFrameId = 0;
     let measureFrameId = 0;
     let settleTimer = 0;
     let contactTimer = 0;
@@ -117,7 +132,8 @@ export default function LiquidJourney() {
     let lastFrameTime = performance.now();
     let lastTrailFrameTime = Number.NEGATIVE_INFINITY;
     let lastScrollTime = performance.now();
-    let lastScrollY = window.scrollY;
+    let maximumScrollY = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
+    let lastScrollY = clamp(window.scrollY, 0, maximumScrollY);
     let scrollVelocity = 0;
     let liquidAngle = 0;
     let landingDeadline = 0;
@@ -129,7 +145,12 @@ export default function LiquidJourney() {
     let hasCompletedFirstBurst = false;
     let liveFlightWaypoint = Number.MIN_SAFE_INTEGER;
     let liveFlightTarget: Point | undefined;
+    let liveFlightCard: HTMLElement | undefined;
+    let isProjectFlightActive = false;
+    let pendingScroll = false;
     let isDisposed = false;
+
+    const getBoundedScrollY = () => clamp(window.scrollY, 0, maximumScrollY);
 
     const measureInsets = () => {
       if (compactMotion.matches) {
@@ -154,6 +175,8 @@ export default function LiquidJourney() {
 
     const measureAnchors = () => {
       measureInsets();
+      maximumScrollY = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
+      const measuredScrollY = getBoundedScrollY();
 
       landingCandidates = Array.from(document.querySelectorAll<HTMLElement>(landingCandidateSelector));
       liveProjectCards = Array.from(
@@ -164,8 +187,8 @@ export default function LiquidJourney() {
       if (liveProjectSection) {
         const sectionRect = liveProjectSection.getBoundingClientRect();
         liveProjectRange = {
-          top: sectionRect.top + window.scrollY,
-          bottom: sectionRect.bottom + window.scrollY,
+          top: sectionRect.top + measuredScrollY,
+          bottom: sectionRect.bottom + measuredScrollY,
         };
       } else {
         liveProjectRange = undefined;
@@ -173,6 +196,8 @@ export default function LiquidJourney() {
 
       liveFlightWaypoint = Number.MIN_SAFE_INTEGER;
       liveFlightTarget = undefined;
+      liveFlightCard = undefined;
+      isProjectFlightActive = false;
       flowAnchors = flowAnchorDefinitions.flatMap(({ selector, side }) => {
         const element = document.querySelector<HTMLElement>(selector);
 
@@ -191,8 +216,10 @@ export default function LiquidJourney() {
               : rect.right + edgeOffset;
         const y =
           side === 'bottom'
-            ? rect.bottom + window.scrollY + edgeOffset
-            : rect.top + window.scrollY + (isCompactAnchor ? rect.height / 2 : Math.min(42, rect.height * 0.22));
+            ? rect.bottom + measuredScrollY + edgeOffset
+            : rect.top +
+              measuredScrollY +
+              (isCompactAnchor ? rect.height / 2 : Math.min(42, rect.height * 0.22));
         const anchorHorizontalInset = compactMotion.matches ? flowInsets.horizontal : 22;
 
         return [
@@ -219,7 +246,7 @@ export default function LiquidJourney() {
           return;
         }
 
-        lastScrollY = window.scrollY;
+        lastScrollY = getBoundedScrollY();
         target = started ? getFlowTarget() : getInitialTarget();
 
         if (!started) {
@@ -273,10 +300,22 @@ export default function LiquidJourney() {
     };
 
     const animate = (frameTime: number) => {
+      frameId = 0;
+
+      if (pendingScroll) {
+        processScroll(frameTime);
+      }
+
       const elapsed = clamp(frameTime - lastFrameTime, 8, 32);
       const speedInfluence = clamp(Math.abs(scrollVelocity) / 2.4, 0, 1);
-      const positionEase = 1 - Math.exp(-elapsed / (isMoving ? lerp(68, 46, speedInfluence) : 82));
-      const tailEase = 1 - Math.exp(-elapsed / (isMoving ? lerp(164, 132, speedInfluence) : 116));
+      const movingPositionResponse = isProjectFlightActive
+        ? lerp(142, 112, speedInfluence)
+        : lerp(68, 46, speedInfluence);
+      const movingTailResponse = isProjectFlightActive
+        ? lerp(214, 178, speedInfluence)
+        : lerp(164, 132, speedInfluence);
+      const positionEase = 1 - Math.exp(-elapsed / (isMoving ? movingPositionResponse : 82));
+      const tailEase = 1 - Math.exp(-elapsed / (isMoving ? movingTailResponse : 116));
       const angleEase = 1 - Math.exp(-elapsed / 92);
       lastFrameTime = frameTime;
 
@@ -339,13 +378,16 @@ export default function LiquidJourney() {
       if (!range || focusDocumentY < range.top || focusDocumentY > range.bottom) {
         liveFlightWaypoint = Number.MIN_SAFE_INTEGER;
         liveFlightTarget = undefined;
+        liveFlightCard = undefined;
+        isProjectFlightActive = false;
         return undefined;
       }
 
-      const waypointSpan = compactMotion.matches ? 96 : 140;
+      const waypointSpan = compactMotion.matches ? 176 : 240;
       const waypoint = Math.floor((window.scrollY - range.top) / waypointSpan);
 
       if (waypoint === liveFlightWaypoint && liveFlightTarget) {
+        isProjectFlightActive = true;
         return liveFlightTarget;
       }
 
@@ -394,6 +436,7 @@ export default function LiquidJourney() {
       }
 
       if (!card || !rect) {
+        isProjectFlightActive = false;
         return undefined;
       }
 
@@ -424,17 +467,36 @@ export default function LiquidJourney() {
       const verticalProgress = 0.18 + seededUnit(seed + 11) * 0.64;
       const edge = Math.abs(waypoint + cardIndex) % 4;
 
+      let nextTarget: Point;
+
       if (edge === 0) {
-        liveFlightTarget = { x: lerp(safeLeft, safeRight, horizontalProgress), y: safeTop };
+        nextTarget = { x: lerp(safeLeft, safeRight, horizontalProgress), y: safeTop };
       } else if (edge === 1) {
-        liveFlightTarget = { x: safeRight, y: lerp(safeTop, safeBottom, verticalProgress) };
+        nextTarget = { x: safeRight, y: lerp(safeTop, safeBottom, verticalProgress) };
       } else if (edge === 2) {
-        liveFlightTarget = { x: lerp(safeLeft, safeRight, horizontalProgress), y: safeBottom };
+        nextTarget = { x: lerp(safeLeft, safeRight, horizontalProgress), y: safeBottom };
       } else {
-        liveFlightTarget = { x: safeLeft, y: lerp(safeTop, safeBottom, verticalProgress) };
+        nextTarget = { x: safeLeft, y: lerp(safeTop, safeBottom, verticalProgress) };
+      }
+
+      if (liveFlightTarget) {
+        nextTarget = limitPointStep(
+          liveFlightTarget,
+          nextTarget,
+          liveFlightCard === card
+            ? compactMotion.matches
+              ? 52
+              : 84
+            : compactMotion.matches
+              ? 76
+              : 112,
+        );
       }
 
       liveFlightWaypoint = waypoint;
+      liveFlightTarget = nextTarget;
+      liveFlightCard = card;
+      isProjectFlightActive = true;
       return liveFlightTarget;
     };
 
@@ -701,6 +763,7 @@ export default function LiquidJourney() {
       }
 
       isMoving = false;
+      isProjectFlightActive = false;
       scrollVelocity *= 0.32;
       root.classList.remove('is-moving', 'is-bursting');
       root.classList.add('is-settling');
@@ -831,18 +894,23 @@ export default function LiquidJourney() {
         dissolveTimer = window.setTimeout(() => {
           root.classList.remove('is-settling', 'is-bursting', 'is-veiled');
           root.classList.add('is-settled');
+          landingAnimation?.cancel();
+          landingAnimation = undefined;
+          fragmentAnimations.forEach((animation) => animation.cancel());
+          fragmentAnimations = [];
         }, compactBurst ? 286 : 372);
       };
     };
 
     const processScroll = (now: number) => {
-      scrollFrameId = 0;
+      pendingScroll = false;
       const scrollElapsed = Math.max(now - lastScrollTime, 16);
-      const nextScrollY = window.scrollY;
+      const nextScrollY = getBoundedScrollY();
       const scrollDelta = nextScrollY - lastScrollY;
       const instantVelocity = scrollDelta / scrollElapsed;
+      const movementEpsilon = compactMotion.matches ? 0.6 : 0.15;
 
-      if (Math.abs(scrollDelta) < 0.1) {
+      if (Math.abs(scrollDelta) < movementEpsilon) {
         lastScrollTime = now;
         lastScrollY = nextScrollY;
         return;
@@ -873,24 +941,21 @@ export default function LiquidJourney() {
         root.classList.add('is-moving');
       }
       target = getFlowTarget();
-      startAnimation();
 
       window.clearTimeout(settleTimer);
       settleTimer = window.setTimeout(settleAtNearestAnchor, compactMotion.matches ? 84 : 72);
     };
 
     const handleScroll = () => {
-      if (!scrollFrameId) {
-        scrollFrameId = window.requestAnimationFrame(processScroll);
-      }
+      pendingScroll = true;
+      startAnimation();
     };
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
         window.cancelAnimationFrame(frameId);
-        window.cancelAnimationFrame(scrollFrameId);
         frameId = 0;
-        scrollFrameId = 0;
+        pendingScroll = false;
         window.clearTimeout(settleTimer);
         window.clearTimeout(contactTimer);
         window.clearTimeout(dissolveTimer);
@@ -903,8 +968,9 @@ export default function LiquidJourney() {
         activeContact = undefined;
         isMoving = false;
         isAnimating = false;
+        isProjectFlightActive = false;
         scrollTravelSinceSettle = 0;
-        lastScrollY = window.scrollY;
+        lastScrollY = getBoundedScrollY();
         root.classList.remove('is-moving', 'is-settling', 'is-bursting', 'is-veiled');
         root.classList.add('is-settled');
       }
@@ -950,7 +1016,6 @@ export default function LiquidJourney() {
     return () => {
       isDisposed = true;
       window.cancelAnimationFrame(frameId);
-      window.cancelAnimationFrame(scrollFrameId);
       window.cancelAnimationFrame(measureFrameId);
       window.clearTimeout(settleTimer);
       window.clearTimeout(contactTimer);

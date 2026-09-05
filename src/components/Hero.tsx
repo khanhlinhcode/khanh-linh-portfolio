@@ -32,7 +32,14 @@ function HeroShowcase({ featuredProject, t }: { featuredProject: Project; t: Tra
       </div>
 
       <div className="showcase-profile">
-        <img src={profile.avatar} alt="" aria-hidden="true" />
+        <img
+          src={profile.avatar}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          height={112}
+          width={92}
+        />
         <div>
           <span className="status-pill" data-liquid-hover="chip">{t.hero.dashboard}</span>
           <strong>{profile.name}</strong>
@@ -96,7 +103,14 @@ export default function Hero({ featuredProject, t }: { featuredProject: Project;
         <div className="hero-layout">
           <div className="hero-copy">
             <div className="hero-identity">
-              <img src={profile.avatar} alt="Khanh Linh To avatar" />
+              <img
+                src={profile.avatar}
+                alt="Khanh Linh To avatar"
+                decoding="async"
+                fetchPriority="high"
+                height={52}
+                width={52}
+              />
               <div>
                 <span className="eyebrow">{t.hero.badge}</span>
                 <strong>{profile.name}</strong>

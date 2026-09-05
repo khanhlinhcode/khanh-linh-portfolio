@@ -251,18 +251,18 @@ export const translations: Record<Language, TranslationDictionary> = {
     liveProjects: {
       'certchain-live': {
         category: 'Blockchain verification',
-        description: 'Certificate issuance and permanent verification through blockchain, IPFS, QR codes, and PDF records.',
+        description: 'A full-stack certificate platform covering issuance, administration, revocation, and permanent on-chain verification. Users can validate records through a certificate ID, QR code, or uploaded PDF, while IPFS and MongoDB support the smart-contract workflow.',
         previewTitle: 'Verified on-chain',
       },
       'phuong-nam-restaurant-live': {
         category: 'One Mekong · Production web',
-        description: 'A polished restaurant landing experience presenting Southern Vietnamese cuisine and a direct reservation path.',
+        description: 'A responsive production website presenting Phương Nam’s Southern Vietnamese cuisine and restaurant experience. The journey leads visitors from discovery to a direct reservation path, supported by a Vite, NestJS, MongoDB, and Redis stack.',
         previewTitle: 'Phương Nam',
         previewHint: 'Southern cuisine · Can Tho',
       },
       'nlp-academic-search-live': {
         category: 'NLP / RAG application',
-        description: 'Hybrid academic retrieval and grounded Q&A with traceable citations and evidence verification.',
+        description: 'A deployed academic search and grounded-Q&A application combining BM25 with semantic retrieval, Sentence-Transformers, and FAISS. The Streamlit experience returns traceable citations and evidence so each generated answer can be checked against its sources.',
         previewTitle: 'Grounded answer',
         previewHint: 'academic retrieval',
       },
@@ -486,18 +486,18 @@ export const translations: Record<Language, TranslationDictionary> = {
     liveProjects: {
       'certchain-live': {
         category: 'Xác thực Blockchain',
-        description: 'Nền tảng cấp và xác thực chứng chỉ lâu dài bằng blockchain, IPFS, QR và hồ sơ PDF.',
+        description: 'Nền tảng full-stack hỗ trợ cấp, quản lý, thu hồi và xác thực chứng chỉ lâu dài trên blockchain. Người dùng có thể kiểm tra hồ sơ bằng Certificate ID, mã QR hoặc tệp PDF; IPFS và MongoDB hỗ trợ quy trình làm việc với smart contract.',
         previewTitle: 'Đã xác thực on-chain',
       },
       'phuong-nam-restaurant-live': {
         category: 'One Mekong · Website production',
-        description: 'Landing page nhà hàng chỉn chu, giới thiệu ẩm thực Nam Bộ và dẫn khách hàng trực tiếp tới hành động đặt bàn.',
+        description: 'Website production responsive giới thiệu ẩm thực Nam Bộ và trải nghiệm tại nhà hàng Phương Nam. Hành trình nội dung dẫn khách từ khám phá thương hiệu tới đặt bàn trực tiếp, với stack triển khai gồm Vite, NestJS, MongoDB và Redis.',
         previewTitle: 'Phương Nam',
         previewHint: 'Ẩm thực Nam Bộ · Cần Thơ',
       },
       'nlp-academic-search-live': {
         category: 'Ứng dụng NLP / RAG',
-        description: 'Tìm kiếm học thuật hybrid và grounded Q&A với citation rõ ràng cùng quy trình kiểm chứng evidence.',
+        description: 'Ứng dụng tìm kiếm học thuật và grounded Q&A kết hợp BM25 với semantic retrieval, Sentence-Transformers và FAISS. Giao diện Streamlit trả về citation có thể truy vết cùng evidence để người dùng kiểm tra từng câu trả lời với nguồn gốc tương ứng.',
         previewTitle: 'Câu trả lời có căn cứ',
         previewHint: 'tìm kiếm học thuật',
       },
