@@ -307,7 +307,20 @@
 
   /* Hero mobile */
   .hero {
-    padding: 48px 18px 52px;
+    align-items: flex-start;
+    padding: 40px 18px 52px;
+  }
+
+  [data-theme="light"] .hero {
+    background:
+      radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--cyan) 8%, transparent), transparent 36%),
+      radial-gradient(circle at 92% 14%, color-mix(in srgb, var(--indigo) 8%, transparent), transparent 38%),
+      linear-gradient(180deg, var(--surface-strong), var(--bg));
+    background-size: auto;
+  }
+
+  [data-theme] .hero::before {
+    opacity: 0;
   }
 
   .hero::after {
@@ -320,16 +333,33 @@
   }
 
   .hero-copy {
-    padding-left: 14px;
+    padding-left: 0;
+  }
+
+  .hero-inner {
+    width: 100%;
+  }
+
+  .hero-copy::before {
+    content: none;
   }
 
   .hero-identity {
-    width: fit-content;
+    width: 100%;
     max-width: 100%;
+    margin-bottom: 22px;
+  }
+
+  .hero-copy :is(.hero-identity, h1, .hero-title, .hero-text) {
+    -webkit-user-select: text;
+    user-select: text;
   }
 
   .hero-showcase {
     padding: 18px;
+    animation: none;
+    filter: none;
+    transform: none;
   }
 
   .showcase-profile {
@@ -364,6 +394,23 @@
   .hero-actions,
   .contact-actions {
     flex-direction: column;
+  }
+
+  .hero-actions .button.primary {
+    order: 1;
+  }
+
+  .hero-actions .button.secondary {
+    order: 2;
+  }
+
+  .hero-actions .button.is-disabled {
+    order: 3;
+    min-height: 42px;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    filter: none;
   }
 
   .button {
@@ -522,7 +569,7 @@
   .brand-copy strong {
     font-size: 0.94rem;
     display: block;
-    max-width: 94px;
+    max-width: 110px;
     overflow: hidden;
     text-overflow: ellipsis;
   }

@@ -63,6 +63,11 @@ const lerp = (start: number, end: number, amount: number) => start + (end - star
 
 const smootherstep = (value: number) => value * value * value * (value * (value * 6 - 15) + 10);
 
+const seededUnit = (seed: number) => {
+  const value = Math.sin(seed * 12.9898) * 43758.5453;
+  return value - Math.floor(value);
+};
+
 const TRAIL_FRAME_INTERVAL = 1000 / 30;
 const MOBILE_BURST_TRAVEL_THRESHOLD = 14;
 
@@ -90,6 +95,8 @@ export default function LiquidJourney() {
 
     let flowAnchors: LiquidAnchor[] = [];
     let landingCandidates: HTMLElement[] = [];
+    let liveProjectCards: HTMLElement[] = [];
+    let liveProjectRange: { top: number; bottom: number } | undefined;
     const visibleLandingCandidates = new Set<HTMLElement>();
     let current: Point = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     let target: Point = current;
@@ -120,6 +127,8 @@ export default function LiquidJourney() {
     let scrollTravelSinceSettle = 0;
     let lastLandingElement: HTMLElement | undefined;
     let hasCompletedFirstBurst = false;
+    let liveFlightWaypoint = Number.MIN_SAFE_INTEGER;
+    let liveFlightTarget: Point | undefined;
     let isDisposed = false;
 
     const measureInsets = () => {
@@ -147,6 +156,23 @@ export default function LiquidJourney() {
       measureInsets();
 
       landingCandidates = Array.from(document.querySelectorAll<HTMLElement>(landingCandidateSelector));
+      liveProjectCards = Array.from(
+        document.querySelectorAll<HTMLElement>('#live-work .live-project-card'),
+      );
+      const liveProjectSection = document.querySelector<HTMLElement>('#live-work');
+
+      if (liveProjectSection) {
+        const sectionRect = liveProjectSection.getBoundingClientRect();
+        liveProjectRange = {
+          top: sectionRect.top + window.scrollY,
+          bottom: sectionRect.bottom + window.scrollY,
+        };
+      } else {
+        liveProjectRange = undefined;
+      }
+
+      liveFlightWaypoint = Number.MIN_SAFE_INTEGER;
+      liveFlightTarget = undefined;
       flowAnchors = flowAnchorDefinitions.flatMap(({ selector, side }) => {
         const element = document.querySelector<HTMLElement>(selector);
 
@@ -306,9 +332,121 @@ export default function LiquidJourney() {
       frameId = window.requestAnimationFrame(animate);
     };
 
+    const getProjectFlightTarget = () => {
+      const range = liveProjectRange;
+      const focusDocumentY = window.scrollY + window.innerHeight * 0.46;
+
+      if (!range || focusDocumentY < range.top || focusDocumentY > range.bottom) {
+        liveFlightWaypoint = Number.MIN_SAFE_INTEGER;
+        liveFlightTarget = undefined;
+        return undefined;
+      }
+
+      const waypointSpan = compactMotion.matches ? 96 : 140;
+      const waypoint = Math.floor((window.scrollY - range.top) / waypointSpan);
+
+      if (waypoint === liveFlightWaypoint && liveFlightTarget) {
+        return liveFlightTarget;
+      }
+
+      let card = liveProjectCards.find(
+        (card) => card.dataset.stackActive === 'true' && card.dataset.stackCovered !== 'true',
+      );
+      let rect = card?.getBoundingClientRect();
+      const visibleBottom = window.innerHeight - flowInsets.bottom;
+
+      if (rect && (rect.bottom < flowInsets.top || rect.top > visibleBottom)) {
+        card = undefined;
+        rect = undefined;
+      }
+
+      if (!card || !rect) {
+        const visibleCards = liveProjectCards
+          .filter(
+            (candidate) =>
+              visibleLandingCandidates.has(candidate) &&
+              candidate.dataset.liquidLandingDisabled !== 'true',
+          )
+          .map((candidate) => ({ card: candidate, rect: candidate.getBoundingClientRect() }))
+          .filter(
+            ({ rect: candidateRect }) =>
+              candidateRect.bottom >= flowInsets.top && candidateRect.top <= visibleBottom,
+          );
+        const viewportCenter = window.innerHeight / 2;
+        const nearestVisibleCard = visibleCards.reduce<(typeof visibleCards)[number] | undefined>(
+          (nearest, candidate) => {
+            if (!nearest) {
+              return candidate;
+            }
+
+            const candidateCenter = candidate.rect.top + candidate.rect.height / 2;
+            const nearestCenter = nearest.rect.top + nearest.rect.height / 2;
+            return Math.abs(candidateCenter - viewportCenter) <
+              Math.abs(nearestCenter - viewportCenter)
+              ? candidate
+              : nearest;
+          },
+          undefined,
+        );
+
+        card = nearestVisibleCard?.card;
+        rect = nearestVisibleCard?.rect;
+      }
+
+      if (!card || !rect) {
+        return undefined;
+      }
+
+      const edgeInset = compactMotion.matches ? 18 : 24;
+      const safeLeft = clamp(
+        rect.left + edgeInset,
+        flowInsets.horizontal,
+        window.innerWidth - flowInsets.horizontal,
+      );
+      const safeRight = clamp(
+        rect.right - edgeInset,
+        safeLeft,
+        window.innerWidth - flowInsets.horizontal,
+      );
+      const safeTop = clamp(
+        rect.top + edgeInset,
+        flowInsets.top,
+        window.innerHeight - flowInsets.bottom,
+      );
+      const safeBottom = clamp(
+        rect.bottom - edgeInset,
+        safeTop,
+        window.innerHeight - flowInsets.bottom,
+      );
+      const cardIndex = Math.max(liveProjectCards.indexOf(card), 0);
+      const seed = waypoint + (cardIndex + 1) * 37;
+      const horizontalProgress = 0.18 + seededUnit(seed) * 0.64;
+      const verticalProgress = 0.18 + seededUnit(seed + 11) * 0.64;
+      const edge = Math.abs(waypoint + cardIndex) % 4;
+
+      if (edge === 0) {
+        liveFlightTarget = { x: lerp(safeLeft, safeRight, horizontalProgress), y: safeTop };
+      } else if (edge === 1) {
+        liveFlightTarget = { x: safeRight, y: lerp(safeTop, safeBottom, verticalProgress) };
+      } else if (edge === 2) {
+        liveFlightTarget = { x: lerp(safeLeft, safeRight, horizontalProgress), y: safeBottom };
+      } else {
+        liveFlightTarget = { x: safeLeft, y: lerp(safeTop, safeBottom, verticalProgress) };
+      }
+
+      liveFlightWaypoint = waypoint;
+      return liveFlightTarget;
+    };
+
     const getFlowTarget = () => {
       if (flowAnchors.length === 0) {
         return current;
+      }
+
+      const projectFlightTarget = getProjectFlightTarget();
+
+      if (projectFlightTarget) {
+        return projectFlightTarget;
       }
 
       const focusDocumentY = window.scrollY + window.innerHeight * 0.46;
@@ -480,6 +618,24 @@ export default function LiquidJourney() {
             score: 0,
           };
         }
+      }
+
+      const activeLiveProject = liveProjectCards.find(
+        (card) => card.dataset.stackActive === 'true' && card.dataset.stackCovered !== 'true',
+      );
+      const activeLiveProjectRect = activeLiveProject?.getBoundingClientRect();
+
+      if (
+        activeLiveProject &&
+        activeLiveProjectRect &&
+        activeLiveProjectRect.bottom >= landingInsets.top &&
+        activeLiveProjectRect.top <= window.innerHeight - candidateBottomInset
+      ) {
+        return {
+          element: activeLiveProject,
+          point: getClosestEdgePoint(activeLiveProjectRect, compactMotion.matches ? 9 : 11),
+          score: 0,
+        };
       }
 
       visibleLandingCandidates.forEach((element) => {
@@ -660,12 +816,16 @@ export default function LiquidJourney() {
         });
 
         activeContact?.classList.remove('is-liquid-contact');
-        activeContact = nearest.element;
-        nearest.element.classList.add('is-liquid-contact');
-        contactTimer = window.setTimeout(() => {
-          nearest.element.classList.remove('is-liquid-contact');
-          activeContact = undefined;
-        }, compactBurst ? 520 : 720);
+        activeContact = nearest.element.matches('.section-copy') ? nearest.element : undefined;
+
+        if (activeContact) {
+          const contactElement = activeContact;
+          contactElement.classList.add('is-liquid-contact');
+          contactTimer = window.setTimeout(() => {
+            contactElement.classList.remove('is-liquid-contact');
+            activeContact = undefined;
+          }, compactBurst ? 520 : 720);
+        }
 
         window.clearTimeout(dissolveTimer);
         dissolveTimer = window.setTimeout(() => {

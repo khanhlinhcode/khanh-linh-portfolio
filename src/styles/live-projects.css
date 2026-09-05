@@ -316,6 +316,42 @@
   line-height: 1.62;
 }
 
+.live-project-stack {
+  display: grid;
+  gap: 11px;
+  margin-top: clamp(24px, 4vh, 40px);
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.live-project-stack-label {
+  color: var(--ink-2);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
+.live-project-stack ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.live-project-stack li {
+  border: 1px solid color-mix(in srgb, var(--cyan) 20%, var(--line));
+  border-radius: var(--apple-radius-pill);
+  padding: 6px 10px;
+  background: color-mix(in srgb, var(--cyan) 6%, var(--surface-2));
+  color: var(--ink-2);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
 .live-project-footer {
   display: flex;
   flex-wrap: wrap;
@@ -499,6 +535,12 @@
 
   .live-project-content {
     padding: 20px;
+  }
+
+  .live-project-stack {
+    gap: 9px;
+    margin-top: 20px;
+    padding-top: 16px;
   }
 }
 

@@ -24,6 +24,7 @@ export type LiveProject = {
   name: string;
   url: string;
   kind: LiveProjectKind;
+  stack: string[];
 };
 
 export const liveProjects: LiveProject[] = [
@@ -32,18 +33,21 @@ export const liveProjects: LiveProject[] = [
     name: 'CertChain',
     url: 'https://n-xi-pink.vercel.app/',
     kind: 'blockchain',
+    stack: ['Solidity', 'Hardhat', 'IPFS', 'Next.js', 'MongoDB'],
   },
   {
     id: 'phuong-nam-restaurant-live',
     name: 'Phương Nam Restaurant',
     url: 'https://phuongnamrestaurant.vercel.app/',
     kind: 'product',
+    stack: ['Vite', 'NestJS', 'MongoDB', 'Redis'],
   },
   {
     id: 'nlp-academic-search-live',
     name: 'NLP Academic Search',
     url: 'https://nlp-academic-search.streamlit.app/',
     kind: 'nlp',
+    stack: ['Python', 'Streamlit', 'Sentence-Transformers', 'FAISS', 'BM25'],
   },
 ];
 

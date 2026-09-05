@@ -107,6 +107,14 @@ export default function LiveProjectsSection({ t }: { t: TranslationDictionary })
                     </div>
                     <h3>{project.name}</h3>
                     <p>{copy.description}</p>
+                    <div className="live-project-stack">
+                      <span className="live-project-stack-label">{t.liveShowcase.technologyLabel}</span>
+                      <ul aria-label={`${t.liveShowcase.technologyLabel}: ${project.stack.join(', ')}`}>
+                        {project.stack.map((technology) => (
+                          <li key={technology}>{technology}</li>
+                        ))}
+                      </ul>
+                    </div>
                     <span className="live-project-footer">
                       <span className="live-project-domain">{new URL(project.url).hostname}</span>
                       <span className="live-project-link">

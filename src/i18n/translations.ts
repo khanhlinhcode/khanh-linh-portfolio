@@ -82,6 +82,7 @@ export type TranslationDictionary = {
   liveShowcase: {
     status: string;
     openProject: string;
+    technologyLabel: string;
   };
   liveProjects: Record<string, LiveProjectCopy>;
   education: {
@@ -245,6 +246,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     liveShowcase: {
       status: '3 deployed products',
       openProject: 'Open live website',
+      technologyLabel: 'Technology stack',
     },
     liveProjects: {
       'certchain-live': {
@@ -479,6 +481,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     liveShowcase: {
       status: '3 sản phẩm đã triển khai',
       openProject: 'Mở website thực tế',
+      technologyLabel: 'Công nghệ sử dụng',
     },
     liveProjects: {
       'certchain-live': {
