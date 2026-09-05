@@ -88,7 +88,6 @@ export type TranslationDictionary = {
     degree: string;
     graduation: string;
     classification: string;
-    gpaLabel: string;
     courseworkLabel: string;
   };
   awards: Record<string, AwardCopy>;
@@ -270,7 +269,6 @@ export const translations: Record<Language, TranslationDictionary> = {
       degree: "Engineer's Degree, Computer Science",
       graduation: 'Graduated August 2026',
       classification: 'Good classification',
-      gpaLabel: 'GPA',
       courseworkLabel: 'Relevant coursework',
     },
     awards: {},
@@ -505,7 +503,6 @@ export const translations: Record<Language, TranslationDictionary> = {
       degree: 'Bằng Kỹ sư, Khoa học Máy tính',
       graduation: 'Tốt nghiệp tháng 08/2026',
       classification: 'Xếp loại Khá',
-      gpaLabel: 'GPA',
       courseworkLabel: 'Môn học liên quan',
     },
     awards: {

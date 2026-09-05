@@ -1,7 +1,13 @@
 import { ArrowUpRight, Blocks, BrainCircuit, Check, UtensilsCrossed } from 'lucide-react';
+import type { CSSProperties } from 'react';
 import { liveProjects, type LiveProjectKind } from '../data/projects';
+import { useStackedProjectDeck } from '../hooks/useStackedProjectDeck';
 import type { TranslationDictionary } from '../i18n/translations';
 import SectionTitle from './SectionTitle';
+
+type ProjectStackStyle = CSSProperties & {
+  '--stack-index': number;
+};
 
 function ProjectIcon({ kind }: { kind: LiveProjectKind }) {
   if (kind === 'blockchain') {
@@ -61,6 +67,8 @@ function ProjectPreview({
 }
 
 export default function LiveProjectsSection({ t }: { t: TranslationDictionary }) {
+  const deckRef = useStackedProjectDeck();
+
   return (
     <section className="section live-projects-section" id="live-work">
       <SectionTitle {...t.sections.liveProjects} />
@@ -71,37 +79,44 @@ export default function LiveProjectsSection({ t }: { t: TranslationDictionary })
           <span>{t.liveShowcase.status}</span>
         </div>
 
-        <div className="live-projects-grid">
-          {liveProjects.map((project) => {
+        <div className="live-projects-grid" data-project-deck ref={deckRef}>
+          {liveProjects.map((project, index) => {
             const copy = t.liveProjects[project.id];
 
             return (
-              <a
-                className={`live-project-card live-project-card--${project.kind}`}
-                data-liquid-hover="card"
-                href={project.url}
+              <div
+                className="live-project-sticky"
+                data-project-sticky
                 key={project.id}
-                rel="noopener noreferrer"
-                target="_blank"
+                style={{ '--stack-index': index + 1 } as ProjectStackStyle}
               >
-                <ProjectPreview hint={copy.previewHint} kind={project.kind} title={copy.previewTitle} />
+                <a
+                  className={`live-project-card live-project-card--${project.kind}`}
+                  data-liquid-hover="card"
+                  data-project-page
+                  href={project.url}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <ProjectPreview hint={copy.previewHint} kind={project.kind} title={copy.previewTitle} />
 
-                <div className="live-project-content">
-                  <div className="live-project-meta">
-                    <span className="live-project-icon"><ProjectIcon kind={project.kind} /></span>
-                    <span>{copy.category}</span>
-                  </div>
-                  <h3>{project.name}</h3>
-                  <p>{copy.description}</p>
-                  <span className="live-project-footer">
-                    <span className="live-project-domain">{new URL(project.url).hostname}</span>
-                    <span className="live-project-link">
-                      {t.liveShowcase.openProject}
-                      <ArrowUpRight size={17} aria-hidden="true" />
+                  <div className="live-project-content">
+                    <div className="live-project-meta">
+                      <span className="live-project-icon"><ProjectIcon kind={project.kind} /></span>
+                      <span>{copy.category}</span>
+                    </div>
+                    <h3>{project.name}</h3>
+                    <p>{copy.description}</p>
+                    <span className="live-project-footer">
+                      <span className="live-project-domain">{new URL(project.url).hostname}</span>
+                      <span className="live-project-link">
+                        {t.liveShowcase.openProject}
+                        <ArrowUpRight size={17} aria-hidden="true" />
+                      </span>
                     </span>
-                  </span>
-                </div>
-              </a>
+                  </div>
+                </a>
+              </div>
             );
           })}
         </div>

@@ -102,22 +102,20 @@
     width: 44px;
   }
 
-  .about-grid,
-  .skills-grid {
+  .about-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .skill-tier[data-tier="ai"] .skill-card {
+  .skills-section .skill-tier .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .skills-section .skill-tier[data-tier="ai"] .skill-card {
     grid-column: auto;
   }
 
-  .skill-tier[data-tier="ai"] .skill-card:first-child {
+  .skills-section .skill-tier[data-tier="ai"] .skill-card:first-child {
     grid-column: 1 / -1;
-  }
-
-  /* Fix: Skills AI tier grid simplification */
-  .skill-tier[data-tier="ai"] .skills-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -379,18 +377,28 @@
 
   /* Fix: All grids single column on mobile */
   .about-grid,
-  .skills-grid,
   .focus-grid,
   .summary-strip {
     grid-template-columns: 1fr;
   }
 
-  .skill-tier[data-tier="ai"] .skill-card:first-child {
-    grid-column: auto;
+  .skills-section .skill-tier[data-tier] .skills-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-flow: row;
   }
 
-  .skill-tier[data-tier="ai"] .skills-grid {
-    grid-template-columns: 1fr;
+  .skills-section .skill-tier[data-tier] .skill-card,
+  .skills-section .skill-tier[data-tier="ai"] .skill-card:first-child {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    align-self: stretch;
+    padding: 20px;
+  }
+
+  .skills-section .skill-tags {
+    gap: 8px;
   }
 
   .skill-tier-list {
@@ -484,6 +492,20 @@
   :root {
     --header-height: 68px;
     --text-hero: clamp(2.16rem, 9vw, 2.58rem);
+  }
+
+  .skills-section .skill-tier[data-tier] .skill-card {
+    padding: 18px;
+  }
+
+  .skills-section .skill-card .card-heading {
+    min-height: 0;
+    align-items: flex-start;
+  }
+
+  .skills-section .skill-card .card-heading h4 {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .brand {

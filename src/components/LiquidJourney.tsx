@@ -5,6 +5,12 @@ type Point = {
   y: number;
 };
 
+type ViewportInsets = {
+  horizontal: number;
+  top: number;
+  bottom: number;
+};
+
 type AnchorSide = 'bottom' | 'left' | 'right';
 
 type LiquidAnchor = Point & {
@@ -57,6 +63,7 @@ const lerp = (start: number, end: number, amount: number) => start + (end - star
 const smootherstep = (value: number) => value * value * value * (value * (value * 6 - 15) + 10);
 
 const TRAIL_FRAME_INTERVAL = 1000 / 30;
+const MOBILE_BURST_TRAVEL_THRESHOLD = 14;
 
 export default function LiquidJourney() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -70,7 +77,8 @@ export default function LiquidJourney() {
     const lensPosition = lens?.parentElement;
     const fragments = root ? Array.from(root.querySelectorAll<HTMLElement>('.liquid-fragment')) : [];
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const compactViewport = window.matchMedia('(max-width: 760px)');
+    const compactMotion = window.matchMedia('(max-width: 760px), (pointer: coarse)');
+    const narrowViewport = window.matchMedia('(max-width: 420px)');
     const simplifiedMotion = window.matchMedia('(max-width: 1080px), (pointer: coarse)');
 
     if (!root || !trail || !lens || !lensPosition || reducedMotion.matches) {
@@ -104,9 +112,27 @@ export default function LiquidJourney() {
     let liquidAngle = 0;
     let landingDeadline = 0;
     let landingReady: (() => void) | undefined;
+    let flowInsets: ViewportInsets = { horizontal: 20, top: 84, bottom: 72 };
+    let landingInsets: ViewportInsets = { horizontal: 18, top: 72, bottom: 52 };
+    let scrollTravelSinceSettle = 0;
+    let lastLandingElement: HTMLElement | undefined;
     let isDisposed = false;
 
     const measureAnchors = () => {
+      if (compactMotion.matches) {
+        const headerHeight =
+          Number.parseFloat(
+            window.getComputedStyle(document.documentElement).getPropertyValue('--header-height'),
+          ) || 72;
+        const safeTop = headerHeight + 18;
+
+        flowInsets = { horizontal: 44, top: safeTop, bottom: 58 };
+        landingInsets = { horizontal: 44, top: safeTop, bottom: 58 };
+      } else {
+        flowInsets = { horizontal: 20, top: 84, bottom: 72 };
+        landingInsets = { horizontal: 18, top: 72, bottom: 52 };
+      }
+
       landingCandidates = Array.from(document.querySelectorAll<HTMLElement>(landingCandidateSelector));
       flowAnchors = flowAnchorDefinitions.flatMap(({ selector, side }) => {
         const element = document.querySelector<HTMLElement>(selector);
@@ -128,11 +154,12 @@ export default function LiquidJourney() {
           side === 'bottom'
             ? rect.bottom + window.scrollY + edgeOffset
             : rect.top + window.scrollY + (isCompactAnchor ? rect.height / 2 : Math.min(42, rect.height * 0.22));
+        const anchorHorizontalInset = compactMotion.matches ? flowInsets.horizontal : 22;
 
         return [
           {
             element,
-            x: clamp(x, 22, window.innerWidth - 22),
+            x: clamp(x, anchorHorizontalInset, window.innerWidth - anchorHorizontalInset),
             y,
           },
         ];
@@ -263,11 +290,21 @@ export default function LiquidJourney() {
       const last = flowAnchors[flowAnchors.length - 1];
 
       if (focusDocumentY <= first.y) {
-        return { x: first.x, y: first.y - window.scrollY };
+        if (!compactMotion.matches) {
+          return { x: first.x, y: first.y - window.scrollY };
+        }
+
+        return {
+          x: clamp(first.x, flowInsets.horizontal, window.innerWidth - flowInsets.horizontal),
+          y: clamp(first.y - window.scrollY, flowInsets.top, window.innerHeight - flowInsets.bottom),
+        };
       }
 
       if (focusDocumentY >= last.y) {
-        return { x: last.x, y: clamp(last.y - window.scrollY, 84, window.innerHeight - 72) };
+        return {
+          x: clamp(last.x, flowInsets.horizontal, window.innerWidth - flowInsets.horizontal),
+          y: clamp(last.y - window.scrollY, flowInsets.top, window.innerHeight - flowInsets.bottom),
+        };
       }
 
       const segmentIndex = flowAnchors.findIndex(
@@ -285,8 +322,16 @@ export default function LiquidJourney() {
       const verticalDrift = Math.sin(Math.PI * progress) * 12;
 
       return {
-        x: clamp(lerp(start.x, end.x, easedProgress) + arc, 20, window.innerWidth - 20),
-        y: clamp(focusDocumentY - window.scrollY - verticalDrift, 84, window.innerHeight - 72),
+        x: clamp(
+          lerp(start.x, end.x, easedProgress) + arc,
+          flowInsets.horizontal,
+          window.innerWidth - flowInsets.horizontal,
+        ),
+        y: clamp(
+          focusDocumentY - window.scrollY - verticalDrift,
+          flowInsets.top,
+          window.innerHeight - flowInsets.bottom,
+        ),
       };
     };
 
@@ -294,9 +339,21 @@ export default function LiquidJourney() {
       const firstAnchor = flowAnchors[0];
 
       if (!started && window.scrollY <= 32 && firstAnchor) {
+        const initialBottomInset = compactMotion.matches ? landingInsets.bottom : 64;
+
         return {
-          x: firstAnchor.x,
-          y: clamp(firstAnchor.y - window.scrollY, 72, window.innerHeight - 64),
+          x: compactMotion.matches
+            ? clamp(
+                firstAnchor.x,
+                landingInsets.horizontal,
+                window.innerWidth - landingInsets.horizontal,
+              )
+            : firstAnchor.x,
+          y: clamp(
+            firstAnchor.y - window.scrollY,
+            landingInsets.top,
+            window.innerHeight - initialBottomInset,
+          ),
         };
       }
 
@@ -321,22 +378,35 @@ export default function LiquidJourney() {
       });
 
       return {
-        x: clamp(closestPoint.x, 18, window.innerWidth - 18),
-        y: clamp(closestPoint.y, 72, window.innerHeight - 52),
+        x: clamp(
+          closestPoint.x,
+          landingInsets.horizontal,
+          window.innerWidth - landingInsets.horizontal,
+        ),
+        y: clamp(
+          closestPoint.y,
+          landingInsets.top,
+          window.innerHeight - landingInsets.bottom,
+        ),
       };
     };
 
     const getNearestLandingTarget = () => {
       let nearest: { element: HTMLElement; point: Point; score: number } | undefined;
+      const candidateBottomInset = compactMotion.matches ? landingInsets.bottom : 36;
 
       visibleLandingCandidates.forEach((element) => {
+        if (element.dataset.liquidLandingDisabled === 'true') {
+          return;
+        }
+
         const rect = element.getBoundingClientRect();
 
         if (
           rect.width < 20 ||
           rect.height < 20 ||
-          rect.bottom < 72 ||
-          rect.top > window.innerHeight - 36 ||
+          rect.bottom < landingInsets.top ||
+          rect.top > window.innerHeight - candidateBottomInset ||
           rect.right < 0 ||
           rect.left > window.innerWidth
         ) {
@@ -367,8 +437,18 @@ export default function LiquidJourney() {
       return {
         element: fallback.element,
         point: {
-          x: fallback.x,
-          y: clamp(fallback.y - window.scrollY, 72, window.innerHeight - 64),
+          x: compactMotion.matches
+            ? clamp(
+                fallback.x,
+                landingInsets.horizontal,
+                window.innerWidth - landingInsets.horizontal,
+              )
+            : fallback.x,
+          y: clamp(
+            fallback.y - window.scrollY,
+            landingInsets.top,
+            window.innerHeight - (compactMotion.matches ? landingInsets.bottom : 64),
+          ),
         },
         score: 0,
       };
@@ -385,15 +465,37 @@ export default function LiquidJourney() {
       root.classList.add('is-settling');
 
       const nearest = getNearestLandingTarget();
+      const compactBurst = compactMotion.matches;
+      const narrowBurst = narrowViewport.matches;
+      const suppressRepeatedBurst =
+        compactBurst &&
+        scrollTravelSinceSettle < MOBILE_BURST_TRAVEL_THRESHOLD &&
+        lastLandingElement === nearest.element;
       target = nearest.point;
       startAnimation();
 
       window.clearTimeout(contactTimer);
       const landingDistance = Math.hypot(target.x - current.x, target.y - current.y);
-      landingDeadline = performance.now() + clamp(138 + landingDistance * 0.3, 158, 244);
+      landingDeadline =
+        performance.now() +
+        (compactBurst
+          ? clamp(112 + landingDistance * 0.22, 132, 198)
+          : clamp(138 + landingDistance * 0.3, 158, 244));
       landingReady = () => {
         landingAnimation?.cancel();
+        landingAnimation = undefined;
         fragmentAnimations.forEach((animation) => animation.cancel());
+        fragmentAnimations = [];
+
+        lastLandingElement = nearest.element;
+        scrollTravelSinceSettle = 0;
+
+        if (suppressRepeatedBurst) {
+          root.classList.remove('is-settling', 'is-bursting');
+          root.classList.add('is-settled');
+          return;
+        }
+
         root.classList.add('is-bursting');
         landingAnimation = lens.animate(
           [
@@ -416,10 +518,19 @@ export default function LiquidJourney() {
               transform: `rotate(${liquidAngle.toFixed(2)}deg) scale3d(.28, .28, 1)`,
             },
           ],
-          { duration: 300, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'forwards' },
+          {
+            duration: compactBurst ? 248 : 300,
+            easing: 'cubic-bezier(.16, 1, .3, 1)',
+            fill: 'forwards',
+          },
         );
-        const activeFragments = compactViewport.matches ? fragments.slice(0, 6) : fragments;
-        const burstScale = compactViewport.matches ? 0.7 : 1;
+        const activeFragments = narrowBurst
+          ? fragments.slice(0, 4)
+          : compactBurst
+            ? fragments.slice(0, 5)
+            : fragments;
+        const burstScale = narrowBurst ? 0.55 : compactBurst ? 0.62 : 1;
+        const burstDuration = narrowBurst ? 238 : compactBurst ? 252 : 330;
 
         fragmentAnimations = activeFragments.map((fragment, index) => {
           const burst = burstFragments[index];
@@ -448,8 +559,8 @@ export default function LiquidJourney() {
               },
             ],
             {
-              delay: burst.delay * 0.4,
-              duration: 330,
+              delay: burst.delay * (compactBurst ? 0.3 : 0.4),
+              duration: burstDuration,
               easing: 'cubic-bezier(.16, 1, .3, 1)',
               fill: 'both',
             },
@@ -462,13 +573,13 @@ export default function LiquidJourney() {
         contactTimer = window.setTimeout(() => {
           nearest.element.classList.remove('is-liquid-contact');
           activeContact = undefined;
-        }, 720);
+        }, compactBurst ? 520 : 720);
 
         window.clearTimeout(dissolveTimer);
         dissolveTimer = window.setTimeout(() => {
           root.classList.remove('is-settling', 'is-bursting');
           root.classList.add('is-settled');
-        }, 372);
+        }, compactBurst ? 286 : 372);
       };
     };
 
@@ -476,8 +587,10 @@ export default function LiquidJourney() {
       scrollFrameId = 0;
       const scrollElapsed = Math.max(now - lastScrollTime, 16);
       const nextScrollY = window.scrollY;
-      const instantVelocity = (nextScrollY - lastScrollY) / scrollElapsed;
+      const scrollDelta = nextScrollY - lastScrollY;
+      const instantVelocity = scrollDelta / scrollElapsed;
 
+      scrollTravelSinceSettle += Math.abs(scrollDelta);
       scrollVelocity = lerp(scrollVelocity, instantVelocity, 0.42);
       lastScrollTime = now;
       lastScrollY = nextScrollY;
@@ -503,7 +616,7 @@ export default function LiquidJourney() {
       startAnimation();
 
       window.clearTimeout(settleTimer);
-      settleTimer = window.setTimeout(settleAtNearestAnchor, 72);
+      settleTimer = window.setTimeout(settleAtNearestAnchor, compactMotion.matches ? 96 : 72);
     };
 
     const handleScroll = () => {
@@ -516,10 +629,24 @@ export default function LiquidJourney() {
       if (document.hidden) {
         window.cancelAnimationFrame(frameId);
         window.cancelAnimationFrame(scrollFrameId);
+        frameId = 0;
         scrollFrameId = 0;
+        window.clearTimeout(settleTimer);
+        window.clearTimeout(contactTimer);
+        window.clearTimeout(dissolveTimer);
+        landingReady = undefined;
+        landingAnimation?.cancel();
+        landingAnimation = undefined;
+        fragmentAnimations.forEach((animation) => animation.cancel());
+        fragmentAnimations = [];
+        activeContact?.classList.remove('is-liquid-contact');
+        activeContact = undefined;
+        isMoving = false;
         isAnimating = false;
-      } else if (isMoving) {
-        startAnimation();
+        scrollTravelSinceSettle = 0;
+        lastScrollY = window.scrollY;
+        root.classList.remove('is-moving', 'is-settling', 'is-bursting');
+        root.classList.add('is-settled');
       }
     };
 
@@ -548,6 +675,7 @@ export default function LiquidJourney() {
     current = getInitialTarget();
     target = current;
     tailPoint = current;
+    lastLandingElement = getNearestLandingTarget().element;
     setPath(1, performance.now(), true);
     root.classList.add('is-ready');
 

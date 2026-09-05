@@ -51,7 +51,6 @@ export const aboutHighlights = [
 export const education = {
   school: 'Nam Can Tho University',
   degree: "Engineer's Degree, Computer Science",
-  gpa: '7.0/10',
   classification: 'Good',
   coursework: ['Data Structures', 'Algorithms', 'Database Systems', 'Software Engineering', 'Machine Learning', 'Computer Vision'],
 };

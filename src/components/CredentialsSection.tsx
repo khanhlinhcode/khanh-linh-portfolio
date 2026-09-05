@@ -15,7 +15,7 @@ export default function CredentialsSection({ t }: { t: TranslationDictionary }) 
             <h3>{education.school}</h3>
           </div>
           <p className="muted">
-            {t.education.graduation} · {t.education.gpaLabel} {education.gpa} · {t.education.classification}
+            {t.education.graduation} · {t.education.classification}
           </p>
           <p>{t.education.degree}</p>
           <p className="subtle-label">{t.education.courseworkLabel}</p>
