@@ -34,10 +34,30 @@
 
 .liquid-journey-canvas {
   position: absolute;
+  z-index: 0;
   inset: 0;
   width: 100%;
   height: 100%;
   overflow: visible;
+}
+
+.liquid-mobile-veil {
+  position: fixed;
+  z-index: 1;
+  inset: 0;
+  display: none;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background:
+    radial-gradient(circle at 50% 34%, color-mix(in srgb, var(--cyan-2) 16%, transparent), transparent 64%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--surface-strong) 88%, var(--cyan) 12%),
+      color-mix(in srgb, var(--surface-strong) 90%, var(--indigo) 10%)
+    );
+  opacity: 0;
+  pointer-events: none;
+  contain: paint;
+  transition: opacity 110ms ease-out;
 }
 
 .liquid-journey-filament {
@@ -63,6 +83,7 @@
 
 .liquid-lens-position {
   position: absolute;
+  z-index: 2;
   top: 0;
   left: 0;
   width: 48px;
@@ -311,6 +332,17 @@
   }
 }
 
+@keyframes liquid-mobile-veil-clear {
+  0%,
+  38% {
+    opacity: 0.15;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-copy,
   .hero-showcase {
@@ -335,6 +367,27 @@
 }
 
 @media (max-width: 760px), (pointer: coarse) {
+  .liquid-mobile-veil {
+    display: block;
+  }
+
+  .liquid-journey.is-veiled:not(.is-bursting) .liquid-mobile-veil {
+    opacity: 0.15;
+  }
+
+  [data-theme="light"] .liquid-journey.is-veiled:not(.is-bursting) .liquid-mobile-veil {
+    opacity: 0.13;
+  }
+
+  .liquid-journey.is-moving .liquid-mobile-veil {
+    opacity: 0;
+    transition-duration: 80ms;
+  }
+
+  .liquid-journey.is-bursting .liquid-mobile-veil {
+    animation: liquid-mobile-veil-clear 236ms linear both;
+  }
+
   .liquid-lens-position {
     width: 36px;
     height: 36px;
@@ -365,7 +418,7 @@
   .liquid-burst::before {
     width: 38px;
     height: 38px;
-    box-shadow: 0 3px 10px rgba(66, 149, 255, 0.12);
+    box-shadow: none;
   }
 
   .liquid-journey.is-bursting .liquid-burst::before {
@@ -373,13 +426,15 @@
   }
 
   .liquid-fragment {
-    box-shadow:
-      inset 1px 1px 2px rgba(255, 255, 255, 0.54),
-      0 3px 7px rgba(46, 111, 220, 0.18);
+    box-shadow: none;
   }
 
-  .liquid-fragment:nth-child(n + 6) {
+  .liquid-fragment:nth-child(n + 5) {
     display: none;
+  }
+
+  .section-copy.is-liquid-contact::after {
+    animation-duration: 420ms;
   }
 }
 
@@ -394,7 +449,7 @@
     height: 34px;
   }
 
-  .liquid-fragment:nth-child(n + 5) {
+  .liquid-fragment:nth-child(n + 4) {
     display: none;
   }
 }

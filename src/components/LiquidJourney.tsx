@@ -30,6 +30,7 @@ const flowAnchorDefinitions: Array<{ selector: string; side: AnchorSide }> = [
 
 const landingCandidateSelector = [
   'main .button:not(.is-disabled)',
+  'main .hero-showcase',
   'main .section-copy',
   'main .summary-strip > div',
   'main .about-card',
@@ -69,11 +70,13 @@ export default function LiquidJourney() {
   const rootRef = useRef<HTMLDivElement>(null);
   const trailRef = useRef<SVGPathElement>(null);
   const lensRef = useRef<HTMLSpanElement>(null);
+  const veilRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const root = rootRef.current;
     const trail = trailRef.current;
     const lens = lensRef.current;
+    const veil = veilRef.current;
     const lensPosition = lens?.parentElement;
     const fragments = root ? Array.from(root.querySelectorAll<HTMLElement>('.liquid-fragment')) : [];
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -81,7 +84,7 @@ export default function LiquidJourney() {
     const narrowViewport = window.matchMedia('(max-width: 420px)');
     const simplifiedMotion = window.matchMedia('(max-width: 1080px), (pointer: coarse)');
 
-    if (!root || !trail || !lens || !lensPosition || reducedMotion.matches) {
+    if (!root || !trail || !lens || !veil || !lensPosition || reducedMotion.matches) {
       return;
     }
 
@@ -116,22 +119,32 @@ export default function LiquidJourney() {
     let landingInsets: ViewportInsets = { horizontal: 18, top: 72, bottom: 52 };
     let scrollTravelSinceSettle = 0;
     let lastLandingElement: HTMLElement | undefined;
+    let hasCompletedFirstBurst = false;
     let isDisposed = false;
 
-    const measureAnchors = () => {
+    const measureInsets = () => {
       if (compactMotion.matches) {
-        const headerHeight =
+        const headerBottom =
+          document.querySelector<HTMLElement>('.site-header')?.getBoundingClientRect().bottom ?? 0;
+        const tokenHeaderHeight =
           Number.parseFloat(
             window.getComputedStyle(document.documentElement).getPropertyValue('--header-height'),
           ) || 72;
-        const safeTop = headerHeight + 18;
+        const safeAreaBottom = Number.parseFloat(window.getComputedStyle(veil).paddingBottom) || 0;
+        const safeTop = Math.max(headerBottom, tokenHeaderHeight) + 28;
+        const safeBottom = 60 + safeAreaBottom;
 
-        flowInsets = { horizontal: 44, top: safeTop, bottom: 58 };
-        landingInsets = { horizontal: 44, top: safeTop, bottom: 58 };
-      } else {
-        flowInsets = { horizontal: 20, top: 84, bottom: 72 };
-        landingInsets = { horizontal: 18, top: 72, bottom: 52 };
+        flowInsets = { horizontal: 44, top: Math.max(safeTop, 104), bottom: safeBottom };
+        landingInsets = { horizontal: 44, top: Math.max(safeTop, 104), bottom: safeBottom };
+        return;
       }
+
+      flowInsets = { horizontal: 20, top: 84, bottom: 72 };
+      landingInsets = { horizontal: 18, top: 72, bottom: 52 };
+    };
+
+    const measureAnchors = () => {
+      measureInsets();
 
       landingCandidates = Array.from(document.querySelectorAll<HTMLElement>(landingCandidateSelector));
       flowAnchors = flowAnchorDefinitions.flatMap(({ selector, side }) => {
@@ -181,9 +194,22 @@ export default function LiquidJourney() {
         }
 
         lastScrollY = window.scrollY;
-        target = getInitialTarget();
-        current = target;
-        tailPoint = target;
+        target = started ? getFlowTarget() : getInitialTarget();
+
+        if (!started) {
+          current = target;
+          tailPoint = target;
+        } else {
+          current = {
+            x: clamp(current.x, flowInsets.horizontal, window.innerWidth - flowInsets.horizontal),
+            y: clamp(current.y, flowInsets.top, window.innerHeight - flowInsets.bottom),
+          };
+          tailPoint = {
+            x: clamp(tailPoint.x, flowInsets.horizontal, window.innerWidth - flowInsets.horizontal),
+            y: clamp(tailPoint.y, flowInsets.top, window.innerHeight - flowInsets.bottom),
+          };
+        }
+
         setPath(1, performance.now(), true);
       });
     };
@@ -360,16 +386,53 @@ export default function LiquidJourney() {
       return getFlowTarget();
     };
 
-    const getClosestEdgePoint = (rect: DOMRect, offset: number) => {
+    const getClosestEdgePoint = (rect: DOMRect, offset: number, preferTop = false) => {
+      const safeRight = window.innerWidth - landingInsets.horizontal;
+      const safeBottom = window.innerHeight - landingInsets.bottom;
       const cornerInset = Math.min(16, rect.width * 0.18, rect.height * 0.24);
-      const horizontalX = clamp(current.x, rect.left + cornerInset, rect.right - cornerInset);
-      const verticalY = clamp(current.y, rect.top + cornerInset, rect.bottom - cornerInset);
-      const edgePoints: Point[] = [
-        { x: rect.left - offset, y: verticalY },
-        { x: rect.right + offset, y: verticalY },
-        { x: horizontalX, y: rect.top - offset },
-        { x: horizontalX, y: rect.bottom + offset },
-      ];
+      const visibleLeft = clamp(rect.left, landingInsets.horizontal, safeRight);
+      const visibleRight = clamp(rect.right, landingInsets.horizontal, safeRight);
+      const visibleTop = clamp(rect.top, landingInsets.top, safeBottom);
+      const visibleBottom = clamp(rect.bottom, landingInsets.top, safeBottom);
+      const horizontalStart = Math.min(visibleLeft + cornerInset, visibleRight);
+      const horizontalEnd = Math.max(visibleRight - cornerInset, horizontalStart);
+      const verticalStart = Math.min(visibleTop + cornerInset, visibleBottom);
+      const verticalEnd = Math.max(visibleBottom - cornerInset, verticalStart);
+      const horizontalX = clamp(current.x, horizontalStart, horizontalEnd);
+      const verticalY = clamp(current.y, verticalStart, verticalEnd);
+
+      if (preferTop) {
+        return {
+          x: horizontalX,
+          y: clamp(rect.top - offset, landingInsets.top, safeBottom),
+        };
+      }
+
+      const edgePoints: Point[] = [];
+      const leftX = rect.left - offset;
+      const rightX = rect.right + offset;
+      const topY = rect.top - offset;
+      const bottomY = rect.bottom + offset;
+
+      if (leftX >= landingInsets.horizontal && leftX <= safeRight) {
+        edgePoints.push({ x: leftX, y: verticalY });
+      }
+      if (rightX >= landingInsets.horizontal && rightX <= safeRight) {
+        edgePoints.push({ x: rightX, y: verticalY });
+      }
+      if (topY >= landingInsets.top && topY <= safeBottom) {
+        edgePoints.push({ x: horizontalX, y: topY });
+      }
+      if (bottomY >= landingInsets.top && bottomY <= safeBottom) {
+        edgePoints.push({ x: horizontalX, y: bottomY });
+      }
+
+      if (edgePoints.length === 0) {
+        return {
+          x: horizontalX,
+          y: clamp(visibleTop + 8, landingInsets.top, safeBottom),
+        };
+      }
 
       const closestPoint = edgePoints.reduce((closest, point) => {
         const pointDistance = Math.hypot(current.x - point.x, current.y - point.y);
@@ -394,6 +457,30 @@ export default function LiquidJourney() {
     const getNearestLandingTarget = () => {
       let nearest: { element: HTMLElement; point: Point; score: number } | undefined;
       const candidateBottomInset = compactMotion.matches ? landingInsets.bottom : 36;
+
+      if (
+        !hasCompletedFirstBurst &&
+        compactMotion.matches &&
+        window.scrollY < window.innerHeight * 0.72
+      ) {
+        const heroShowcase = document.querySelector<HTMLElement>('.hero-showcase');
+        const heroRect = heroShowcase?.getBoundingClientRect();
+
+        if (
+          heroShowcase &&
+          heroRect &&
+          heroRect.width >= 20 &&
+          heroRect.height >= 20 &&
+          heroRect.bottom >= landingInsets.top &&
+          heroRect.top <= window.innerHeight - candidateBottomInset
+        ) {
+          return {
+            element: heroShowcase,
+            point: getClosestEdgePoint(heroRect, 10, true),
+            score: 0,
+          };
+        }
+      }
 
       visibleLandingCandidates.forEach((element) => {
         if (element.dataset.liquidLandingDisabled === 'true') {
@@ -427,7 +514,11 @@ export default function LiquidJourney() {
         return nearest;
       }
 
-      const focusY = window.innerHeight * 0.46;
+      const focusY = clamp(
+        window.innerHeight * 0.46,
+        landingInsets.top,
+        window.innerHeight - landingInsets.bottom,
+      );
       const fallback = flowAnchors.reduce((closest, anchor) => {
         const currentDistance = Math.abs(anchor.y - window.scrollY - focusY);
         const closestDistance = Math.abs(closest.y - window.scrollY - focusY);
@@ -438,17 +529,11 @@ export default function LiquidJourney() {
         element: fallback.element,
         point: {
           x: compactMotion.matches
-            ? clamp(
-                fallback.x,
-                landingInsets.horizontal,
-                window.innerWidth - landingInsets.horizontal,
-              )
+            ? clamp(current.x, landingInsets.horizontal, window.innerWidth - landingInsets.horizontal)
             : fallback.x,
-          y: clamp(
-            fallback.y - window.scrollY,
-            landingInsets.top,
-            window.innerHeight - (compactMotion.matches ? landingInsets.bottom : 64),
-          ),
+          y: compactMotion.matches
+            ? focusY
+            : clamp(fallback.y - window.scrollY, landingInsets.top, window.innerHeight - 64),
         },
         score: 0,
       };
@@ -468,9 +553,15 @@ export default function LiquidJourney() {
       const compactBurst = compactMotion.matches;
       const narrowBurst = narrowViewport.matches;
       const suppressRepeatedBurst =
+        hasCompletedFirstBurst &&
         compactBurst &&
         scrollTravelSinceSettle < MOBILE_BURST_TRAVEL_THRESHOLD &&
         lastLandingElement === nearest.element;
+
+      if (!suppressRepeatedBurst) {
+        root.classList.add('is-veiled');
+      }
+
       target = nearest.point;
       startAnimation();
 
@@ -487,11 +578,9 @@ export default function LiquidJourney() {
         fragmentAnimations.forEach((animation) => animation.cancel());
         fragmentAnimations = [];
 
-        lastLandingElement = nearest.element;
-        scrollTravelSinceSettle = 0;
-
         if (suppressRepeatedBurst) {
-          root.classList.remove('is-settling', 'is-bursting');
+          scrollTravelSinceSettle = 0;
+          root.classList.remove('is-settling', 'is-bursting', 'is-veiled');
           root.classList.add('is-settled');
           return;
         }
@@ -524,10 +613,13 @@ export default function LiquidJourney() {
             fill: 'forwards',
           },
         );
+        hasCompletedFirstBurst = true;
+        lastLandingElement = nearest.element;
+        scrollTravelSinceSettle = 0;
         const activeFragments = narrowBurst
-          ? fragments.slice(0, 4)
+          ? fragments.slice(0, 3)
           : compactBurst
-            ? fragments.slice(0, 5)
+            ? fragments.slice(0, 4)
             : fragments;
         const burstScale = narrowBurst ? 0.55 : compactBurst ? 0.62 : 1;
         const burstDuration = narrowBurst ? 238 : compactBurst ? 252 : 330;
@@ -577,7 +669,7 @@ export default function LiquidJourney() {
 
         window.clearTimeout(dissolveTimer);
         dissolveTimer = window.setTimeout(() => {
-          root.classList.remove('is-settling', 'is-bursting');
+          root.classList.remove('is-settling', 'is-bursting', 'is-veiled');
           root.classList.add('is-settled');
         }, compactBurst ? 286 : 372);
       };
@@ -590,6 +682,12 @@ export default function LiquidJourney() {
       const scrollDelta = nextScrollY - lastScrollY;
       const instantVelocity = scrollDelta / scrollElapsed;
 
+      if (Math.abs(scrollDelta) < 0.1) {
+        lastScrollTime = now;
+        lastScrollY = nextScrollY;
+        return;
+      }
+
       scrollTravelSinceSettle += Math.abs(scrollDelta);
       scrollVelocity = lerp(scrollVelocity, instantVelocity, 0.42);
       lastScrollTime = now;
@@ -600,23 +698,25 @@ export default function LiquidJourney() {
         root.classList.add('is-started');
       }
 
-      isMoving = true;
-      landingReady = undefined;
-      window.clearTimeout(contactTimer);
-      window.clearTimeout(dissolveTimer);
-      landingAnimation?.cancel();
-      landingAnimation = undefined;
-      fragmentAnimations.forEach((animation) => animation.cancel());
-      fragmentAnimations = [];
-      activeContact?.classList.remove('is-liquid-contact');
-      activeContact = undefined;
-      root.classList.remove('is-settled', 'is-settling', 'is-bursting');
-      root.classList.add('is-moving');
+      if (!isMoving) {
+        isMoving = true;
+        landingReady = undefined;
+        window.clearTimeout(contactTimer);
+        window.clearTimeout(dissolveTimer);
+        landingAnimation?.cancel();
+        landingAnimation = undefined;
+        fragmentAnimations.forEach((animation) => animation.cancel());
+        fragmentAnimations = [];
+        activeContact?.classList.remove('is-liquid-contact');
+        activeContact = undefined;
+        root.classList.remove('is-settled', 'is-settling', 'is-bursting', 'is-veiled');
+        root.classList.add('is-moving');
+      }
       target = getFlowTarget();
       startAnimation();
 
       window.clearTimeout(settleTimer);
-      settleTimer = window.setTimeout(settleAtNearestAnchor, compactMotion.matches ? 96 : 72);
+      settleTimer = window.setTimeout(settleAtNearestAnchor, compactMotion.matches ? 84 : 72);
     };
 
     const handleScroll = () => {
@@ -645,7 +745,7 @@ export default function LiquidJourney() {
         isAnimating = false;
         scrollTravelSinceSettle = 0;
         lastScrollY = window.scrollY;
-        root.classList.remove('is-moving', 'is-settling', 'is-bursting');
+        root.classList.remove('is-moving', 'is-settling', 'is-bursting', 'is-veiled');
         root.classList.add('is-settled');
       }
     };
@@ -675,7 +775,6 @@ export default function LiquidJourney() {
     current = getInitialTarget();
     target = current;
     tailPoint = current;
-    lastLandingElement = getNearestLandingTarget().element;
     setPath(1, performance.now(), true);
     root.classList.add('is-ready');
 
@@ -721,6 +820,8 @@ export default function LiquidJourney() {
         </defs>
         <path className="liquid-journey-filament" ref={trailRef} />
       </svg>
+
+      <span className="liquid-mobile-veil" ref={veilRef} />
 
       <span className="liquid-lens-position">
         <span className="liquid-lens" ref={lensRef}>
