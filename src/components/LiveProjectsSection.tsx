@@ -1,4 +1,4 @@
-import { ArrowUpRight, Blocks, BrainCircuit, Check, UtensilsCrossed } from 'lucide-react';
+import { ArrowUpRight, Blocks, BrainCircuit, ShoppingBag, UtensilsCrossed } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { liveProjects, type LiveProjectKind } from '../data/projects';
 import { useStackedProjectDeck } from '../hooks/useStackedProjectDeck';
@@ -10,6 +10,7 @@ type ProjectStackStyle = CSSProperties & {
 };
 
 function ProjectIcon({ kind }: { kind: LiveProjectKind }) {
+  if (kind === 'commerce') return <ShoppingBag size={22} aria-hidden="true" />;
   if (kind === 'blockchain') {
     return <Blocks size={22} aria-hidden="true" />;
   }
@@ -33,7 +34,7 @@ function ProjectPreview({
   if (kind === 'blockchain') {
     return (
       <div className="live-project-visual live-project-visual--blockchain" aria-hidden="true">
-        <span className="chain-node chain-node--primary"><Check size={20} /></span>
+        <span className="chain-node chain-node--primary"><Blocks size={20} /></span>
         <span className="chain-link" />
         <span className="chain-node" />
         <span className="chain-link" />
@@ -43,10 +44,10 @@ function ProjectPreview({
     );
   }
 
-  if (kind === 'product') {
+  if (kind === 'product' || kind === 'commerce') {
     return (
       <div className="live-project-visual live-project-visual--restaurant" aria-hidden="true">
-        <span className="restaurant-monogram">PN</span>
+        <span className="restaurant-monogram">{kind === 'commerce' ? 'FM' : 'PN'}</span>
         <div>
           <strong>{title}</strong>
           {hint ? <span>{hint}</span> : null}
@@ -75,7 +76,6 @@ export default function LiveProjectsSection({ t }: { t: TranslationDictionary })
 
       <div className="live-projects-shell">
         <div className="live-projects-status">
-          <span className="live-status-dot" aria-hidden="true" />
           <span>{t.liveShowcase.status}</span>
         </div>
 
@@ -106,7 +106,9 @@ export default function LiveProjectsSection({ t }: { t: TranslationDictionary })
                       <span>{copy.category}</span>
                     </div>
                     <h3>{project.name}</h3>
+                    <span className="project-status">{copy.status}</span>
                     <p>{copy.description}</p>
+                    <p className="project-limitation">{copy.limitation}</p>
                     <div className="live-project-stack">
                       <span className="live-project-stack-label">{t.liveShowcase.technologyLabel}</span>
                       <ul aria-label={`${t.liveShowcase.technologyLabel}: ${project.stack.join(', ')}`}>

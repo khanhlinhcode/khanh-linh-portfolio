@@ -3,7 +3,6 @@ export type ExperienceItem = {
   company: string;
   role: string;
   location: string;
-  period: string;
   mode?: string;
   tech?: string[];
   bullets: string[];
@@ -15,26 +14,24 @@ export const experiences: ExperienceItem[] = [
     company: 'Phuong Vinh Group — OneMekong Platform',
     role: 'Software Engineer (Full-Stack)',
     location: 'Can Tho, Vietnam',
-    period: 'June 2026 – Present',
     tech: ['NestJS', 'MongoDB', 'Redis', 'Vite', 'Flutter'],
     bullets: [
-      'Owned production features across food ordering and hotel booking, implementing backend and frontend flows for menu browsing, cart, order placement, room assignment, and restaurant administration.',
-      'Built phone-number OTP verification and migrated the SMS provider from Firebase to eSMS after reliability issues.',
-      'Contributed to an in-house booking and room-assignment workflow replacing a third-party POS dependency.',
+      'Contributed Flutter restaurant flows for menus, table reservations, and food ordering, alongside React administration for restaurant data, menus, and incoming orders.',
+      'Integrated REST APIs, synchronized booking state, and addressed duplicate-booking issues across the application workflow.',
+      'Contributed to the Firebase-to-eSMS OTP migration and scheduled daily Vietcombank XML exchange-rate updates.',
     ],
   },
   {
     id: 'tien-phong-ai-iot-intern',
     company: 'Tien Phong Technology Engineering Co., Ltd.',
-    role: 'Software Engineering Intern — AI Drowsiness Detection & IoT Monitoring',
+    role: 'Engineering Intern — Computer Vision, Edge AI & IoT',
     location: 'Can Tho, Vietnam',
-    period: 'October 2025 – June 2026',
     mode: 'On-site',
-    tech: ['React', 'MediaPipe', 'ESP32', 'Raspberry Pi', 'MQTT', 'Camera', 'Buzzer', 'Git/GitHub'],
+    tech: ['Python', 'OpenCV', 'MediaPipe', 'Raspberry Pi 4', 'ESP32', 'C++', 'PlatformIO', 'MQTT', 'Flutter', 'systemd'],
     bullets: [
-      'Built React UI components for a real-time AI drowsiness-detection system and supported MediaPipe-based computer-vision detection workflows.',
-      'Contributed to IoT integration with ESP32, Raspberry Pi, MQTT, camera, and buzzer for real-time alerting.',
-      'Supported testing and debugging through Git and GitHub workflows.',
+      'Implemented camera processing with OpenCV and MediaPipe Face Landmarker on Raspberry Pi 4, using eye closure, yawning, and head pose as drowsiness indicators.',
+      'Worked on latest-frame processing and ESP32 C++/PlatformIO firmware, integrating MQTT heartbeat/reconnect behavior and buzzer/LED alerts.',
+      'Integrated Flutter monitoring with HTTP APIs and Linux systemd services for device startup and recovery.',
     ],
   },
 ];

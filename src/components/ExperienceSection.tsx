@@ -18,7 +18,6 @@ export default function ExperienceSection({ t }: { t: TranslationDictionary }) {
             <article className="timeline-block" data-liquid-hover="card" key={experience.id}>
               <div className="timeline-meta">
                 <BriefcaseBusiness size={22} aria-hidden="true" />
-                <span>{copy?.period ?? experience.period}</span>
                 <small>{metadata}</small>
               </div>
               <div className="timeline-content">

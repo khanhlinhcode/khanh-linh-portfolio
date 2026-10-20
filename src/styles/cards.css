@@ -284,8 +284,8 @@
 
 .timeline-block {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 30px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
   padding: 32px;
 }
 
@@ -296,11 +296,37 @@
 }
 
 .timeline-meta {
-  display: grid;
-  align-content: start;
+  display: flex;
+  align-items: center;
   gap: 10px;
   color: var(--cyan);
   font-weight: 800;
+}
+
+.project-status {
+  display: block;
+  margin-block: 8px 12px;
+  color: var(--ink-2);
+  font-size: var(--text-label);
+  font-weight: 600;
+}
+
+.project-card .project-limitation,
+.live-project-content .project-limitation {
+  color: var(--ink-2);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin-block: 16px;
+}
+
+.project-group {
+  margin-top: clamp(28px, 4vw, 48px);
+}
+
+.project-group-title {
+  margin-bottom: 20px;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  text-wrap: balance;
 }
 
 .timeline-meta small {

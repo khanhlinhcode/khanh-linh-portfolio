@@ -2,7 +2,7 @@ export const profile = {
   name: 'Khanh Linh To',
   vietnameseName: 'To Khanh Linh',
   title: 'AI Engineer | Software Engineer',
-  roleFocus: 'NLP/RAG | Computer Vision | LLM Applications',
+  roleFocus: 'NLP/RAG | Computer Vision & Edge AI | Full-Stack Systems',
   location: 'Can Tho, Vietnam',
   phone: '0848994188',
   email: 'linhto01012000cm@gmail.com',
@@ -24,7 +24,7 @@ export const navItems = [
 
 export const profileSignals = [
   'NLP / RAG systems',
-  'Computer vision & deep learning',
+  'Computer vision & edge AI',
   'LLM-powered applications',
   'Production software engineering',
 ];
@@ -75,10 +75,10 @@ export const awards: AwardItem[] = [
     description: 'Applied deep learning in an autonomous-vehicle racing project.',
   },
   {
-    id: 'ai-olympic-2025',
-    title: 'Top 10 — AI Olympic 2025',
+    id: 'ai-olympic-2026',
+    title: 'Top 10 — AI Olympic 2026',
     organizer: 'FPT University',
-    date: 'March 2025',
+    date: '2026',
     description: 'Computer-vision challenge focused on identifying diseases in rice plants from images.',
   },
 ];

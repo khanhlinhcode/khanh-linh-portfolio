@@ -5,7 +5,7 @@ import SectionTitle from './SectionTitle';
 
 export default function ProjectsSection({ t }: { t: TranslationDictionary }) {
   const featuredProject = projects.find((project) => project.featured) ?? projects[0]!;
-  const secondaryProjects = projects.filter((project) => project.name !== featuredProject.name);
+  const secondaryProjects = projects.filter((project) => project.id !== featuredProject.id);
 
   return (
     <section className="section" id="projects">
@@ -13,11 +13,16 @@ export default function ProjectsSection({ t }: { t: TranslationDictionary }) {
       <div className="featured-project">
         <ProjectCard project={featuredProject} t={t} />
       </div>
-      <div className="projects-grid">
-        {secondaryProjects.map((project) => (
-          <ProjectCard project={project} key={project.id} t={t} />
-        ))}
-      </div>
+      {(['ai', 'engineering'] as const).map((group) => (
+        <div className="project-group" key={group} role="group" aria-labelledby={`projects-${group}`}>
+          <h3 className="project-group-title" id={`projects-${group}`}>{t.projectGroups[group]}</h3>
+          <div className="projects-grid">
+            {secondaryProjects.filter((project) => project.group === group).map((project) => (
+              <ProjectCard project={project} key={project.id} t={t} />
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
   );
 }

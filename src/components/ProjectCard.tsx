@@ -3,11 +3,7 @@ import type { Project } from '../data/projects';
 import type { TranslationDictionary } from '../i18n/translations';
 
 function getProjectCopy(project: Project, t: TranslationDictionary) {
-  return t.projects[project.name] ?? {
-    category: project.category,
-    description: project.description,
-    features: project.features,
-  };
+  return t.projects[project.id];
 }
 
 export default function ProjectCard({ project, t }: { project: Project; t: TranslationDictionary }) {
@@ -15,7 +11,7 @@ export default function ProjectCard({ project, t }: { project: Project; t: Trans
   const hasGithubLink = project.links.some((link) => link.kind === 'github');
 
   return (
-    <article className={`project-card ${project.featured ? 'featured' : ''}`} data-liquid-hover="card">
+    <article className={`project-card ${project.featured ? 'featured' : ''}`} data-liquid-hover="card" data-project-id={project.id}>
       <div className="project-topline">
         <div className="project-label-stack">
           {project.featured ? (
@@ -23,13 +19,14 @@ export default function ProjectCard({ project, t }: { project: Project; t: Trans
           ) : null}
           <span className="project-category">{copy.category}</span>
         </div>
-        {hasGithubLink ? (
+        {project.links.length > 0 && (hasGithubLink ? (
           <Github className="project-corner-icon" size={18} aria-hidden="true" />
         ) : (
           <ExternalLink className="project-corner-icon" size={18} aria-hidden="true" />
-        )}
+        ))}
       </div>
       <h3>{project.name}</h3>
+      <span className="project-status">{t.projectStatuses[project.status]}</span>
       <p>{copy.description}</p>
       <div className="tags compact" aria-label={`${project.name} technology stack`}>
         {project.stack.map((item) => (
@@ -41,7 +38,8 @@ export default function ProjectCard({ project, t }: { project: Project; t: Trans
           <li key={feature}>{feature}</li>
         ))}
       </ul>
-      <div className="project-links" aria-label={`${project.name} links`}>
+      <p className="project-limitation">{copy.limitation}</p>
+      {project.links.length > 0 && <div className="project-links" aria-label={project.name}>
         {project.links.map((link) => {
           const label = (link.kind && t.projectLinkLabels[link.kind]) || link.label;
 
@@ -58,7 +56,7 @@ export default function ProjectCard({ project, t }: { project: Project; t: Trans
             </a>
           );
         })}
-      </div>
+      </div>}
     </article>
   );
 }
